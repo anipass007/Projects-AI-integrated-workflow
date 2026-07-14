@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickBite - Fast Food Delivery</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --orange:#FF5722;--orange-light:#FF7043;--orange-dark:#E64A19;
+  --green:#4CAF50;--bg:#FFF8F5;--white:#fff;
+  --gray:#F5F5F5;--text:#1A1A1A;--muted:#777;
+  --card-shadow:0 2px 12px rgba(255,87,34,0.10);
+}
+body{font-family:'Hind',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+h1,h2,h3,.brand{font-family:'Baloo 2',cursive}
+
+/* NAV */
+nav{
+  background:var(--white);
+  padding:0 24px;
+  height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;border-bottom:2px solid #FFE0D6;position:sticky;top:0;z-index:100}
+.brand{font-size:26px;font-weight:800;color:var(--orange)}
+.brand span{color:var(--green)}
+.nav-center{display:flex;align-items:center;gap:8px;background:var(--gray);border-radius:40px;padding:8px 16px;flex:1;max-width:320px;margin:0 20px}
+.nav-center input{border:none;background:transparent;font-size:14px;width:100%;outline:none;font-family:'Hind',sans-serif}
+.nav-right{display:flex;align-items:center;gap:12px}
+.cart-btn{background:var(--orange);color:#fff;border:none;border-radius:30px;padding:10px 20px;font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;font-family:'Baloo 2',cursive;transition:background 0.2s}
+.cart-btn:hover{background:var(--orange-dark)}
+.cart-count{background:#fff;color:var(--orange);border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.loc-pill{background:#FFF3EF;border:1px solid #FFD0C0;border-radius:20px;padding:6px 12px;font-size:13px;color:var(--orange-dark);font-weight:500;white-space:nowrap}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#FF5722 0%,#FF9800 100%);color:#fff;padding:36px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-radius:0 0 32px 32px;margin-bottom:28px}
+.hero-text h1{font-size:36px;font-weight:800;line-height:1.1;margin-bottom:8px}
+.hero-text p{font-size:15px;opacity:0.9;margin-bottom:18px}
+.hero-tags{display:flex;gap:8px;flex-wrap:wrap}
+.hero-tag{background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);border-radius:20px;padding:4px 12px;font-size:13px}
+.hero-img{font-size:80px;text-align:center;line-height:1}
+
+/* CATEGORIES */
+section{padding:0 20px;margin-bottom:28px}
+.sec-title{font-size:20px;font-weight:700;margin-bottom:16px;color:var(--text)}
+.sec-title span{color:var(--orange)}
+.cat-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+.cat-scroll::-webkit-scrollbar{display:none}
+.cat-card{min-width:100px;background:var(--white);border-radius:16px;padding:14px 10px;text-align:center;border:2px solid transparent;transition:all 0.2s;box-shadow:var(--card-shadow);flex-shrink:0}
+.cat-card:hover,.cat-card.active{border-color:var(--orange);background:#FFF3EF}
+.cat-card .icon{font-size:32px;margin-bottom:6px}
+.cat-card p{font-size:12px;font-weight:600;color:var(--text)}
+
+/* RESTAURANT CARDS */
+.rest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.rest-card{background:var(--white);border-radius:20px;overflow:hidden;box-shadow:var(--card-shadow);>transition:transform 0.2s}
+.rest-card:hover{transform:translateY(-4px)}
+.rest-img{width:100%;height:160px;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:60px;background:linear-gradient(135deg,#FFF3EF,#FFE0D6)}
+.rest-body{padding:14px}
+.rest-name{font-size:17px;font-weight:700;margin-bottom:4px}
+.rest-meta{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);margin-bottom:8px}
+.badge-green{background:#E8F5E9;color:#2E7D32;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600}
+.badge-orange{background:#FFF3EF;color:var(--orange-dark);border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600}
+.star{color:#FF9800}
+.rest-tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{background:var(--gray);border-radius:8px;padding:3px 10px;font-size:12px;color:var(--muted)}
+
+/* FOOD ITEMS */
+.food-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.food-card{background:var(--white);border-radius:18px;box-shadow:var(--card-shadow);overflow:hidden;transition:transform 0.2s}
+.food-card:hover{transform:translateY(-3px)}
+.food-img{height:140px;display:flex;align-items:center;justify-content:center;font-size:56px;background:linear-gradient(135deg,#FFFDE7,#FFF9C4)}
+.food-body{padding:12px}
+.food-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.food-desc{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.4}
+.food-footer{display:flex;align-items:center;justify-content:space-between}
+.price{font-size:17px;font-weight:700;color:var(--orange-dark)}
+.add-btn{background:var(--orange);color:#fff;border:none;border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;font-family:'Baloo 2',cursive;transition:background 0.2s}
+.add-btn:hover{background:var(--orange-dark)}
+.veg-dot{display:inline-block;width:10px;height:10px;background:var(--green);border-radius:50%;margin-right:4px}
+
+/* CART PANEL */
+#cart-panel{position:fixed;right:-380px;top:0;height:100vh;width:360px;background:var(--white);box-shadow:-4px 0 24px rgba(0,0,0,0.15);z-index:200;transition:right 0.3s;display:flex;flex-direction:column;border-radius:20px 0 0 20px;overflow:hidden}
+#cart-panel.open{right:0}
+.cart-header{background:var(--orange);color:#fff;padding:20px;display:flex;align-items:center;justify-content:space-between}
+.cart-header h2{font-size:20px;font-weight:700}
+.close-btn{background:rgba(255,255,255,0.2);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;display:flex;align-items:center;justify-content:center}
+.cart-items{flex:1;overflow-y:auto;padding:16px}
+.cart-empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.cart-empty .empty-icon{font-size:56px;margin-bottom:12px}
+.cart-item{display:flex;align-items:center;gap:12px;padding:12px;background:var(--gray);border-radius:14px;margin-bottom:10px}
+.cart-item-info{flex:1}
+.cart-item-name{font-size:14px;font-weight:600}
+.cart-item-price{font-size:13px;color:var(--orange)}
+.qty-control{display:flex;align-items:center;gap:8px}
+.qty-btn{background:var(--white);border:1px solid #ddd;width:28px;height:28px;border-radius:50%;
+font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.qty-btn:hover{background:#FFE0D6;border-color:var(--orange)}
+.cart-footer{padding:16px;border-top:2px solid #FFE0D6}
+.total-row{display:flex;justify-content:space-between;font-size:15px;font-weight:600;margin-bottom:14px}
+.checkout-btn{width:100%;background:var(--green);color:#fff;border:none;border-radius:30px;padding:14px;font-size:16px;font-weight:700;font-family:'Baloo 2',cursive;transition:background 0.2s}
+.checkout-btn:hover{background:#388E3C}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:150}
+.overlay.show{display:block}
+
+/* OFFERS */
+.offer-scroll{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+.offer-scroll::-webkit-scrollbar{display:none}
+.offer-card{min-width:220px;background:linear-gradient(135deg,#FF5722,#FF9800);border-radius:18px;padding:18px;color:#fff;flex-shrink:0}
+.offer-card h3{font-size:18px;font-weight:700;margin-bottom:4px}
+.offer-card p{font-size:13px;opacity:0.9;margin-bottom:10px}
+.offer-code{background:rgba(255,255,255,0.25);border:1.5px dashed rgba(255,255,255,0.7);border-radius:8px;padding:4px 12px;font-size:13px;font-weight:700;display:inline-block}
+
+/* NOTIFICATION */
+.notif{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1A1A1A;color:#fff;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:500;z-index:300;transition:transform 0.3s;white-space:nowrap}
+.notif.show{transform:translateX(-50%) translateY(0)}
+
+/* FOOTER */
+footer{background:#1A1A1A;color:#aaa;padding:32px 24px;margin-top:40px}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:24px;margin-bottom:24px}
+.footer-col h4{color:#fff;font-size:16px;font-weight:700;margin-bottom:12px;font-family:'Baloo 2',cursive}
+.footer-col p,.footer-col a{font-size:13px;line-height:2;display:block;color:#aaa;text-decoration:none}
+.footer-col a:hover{color:var(--orange)}
+.footer-bottom{border-top:1px solid #333;padding-top:16px;text-align:center;font-size:13px}
+
+@media(max-width:600px){
+  .hero h1{font-size:26px}.hero-img{font-size:60px}
+  .rest-grid{grid-template-columns:1fr}
+  .food-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+  #cart-panel{width:90%;
+  border-radius:0}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="brand">Quick<span>Bite</span> 🍕</div>
+  <div class="nav-right">
+    <div class="loc-pill">📍 Lucknow</div>
+    <button class="cart-btn" onclick="openCart()">
+      🛒 Cart <span class="cart-count" id="cart-count">0</span>
+    </button>
+  </div>
+</nav>
+  <div class="nav-center">
+    <span style="color:#999;font-size:16px">🔍</span>
+    <input type="text" id="search" placeholder="Khaana, restaurant dhundhein..." style="display: block">
+  </div>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-text">
+    <h1>Bhook lagi?<br>Hum aa rahe hain! 🚀</h1>
+    <p>30 minute mein ghar tak delivery — guaranteed!</p>
+    <div class="hero-tags">
+      <span class="hero-tag">⚡ 30 Min Delivery</span>
+      <span class="hero-tag">🆓 Free Delivery ₹299+</span>
+      <span class="hero-tag">🌟 500+ Restaurants</span>
+    </div>
+  </div>
+  <div class="hero-img">🍔🍕🍜</div>
+</div>
+
+<!-- OFFERS -->
+<section>
+  <h2 class="sec-title">🔥 Aaj ke <span>Offers</span></h2>
+  <div class="offer-scroll">
+    <div class="offer-card">
+      <h3>50% OFF tak!</h3>
+      <p>Pehli order par bada discount</p>
+      <span class="offer-code">PEHLIBAAR</span>
+    </div>
+    <div class="offer-card" style="background:linear-gradient(135deg,#4CAF50,#8BC34A)">
+      <h3>Free Delivery</h3>
+      <p>₹199 se upar sabhi orders par</p>
+      <span class="offer-code">FREEHAI</span>
+    </div>
+    <div class="offer-card" style="background:linear-gradient(135deg,#9C27B0,#E91E63)">
+      <h3>Flat ₹100 OFF</h3>
+      <p>₹499+ ke order par</p>
+      <span class="offer-code">SAVE100</span>
+    </div>
+    <div class="offer-card" style="background:linear-gradient(135deg,#1976D2,#00BCD4)">
+      <h3>Weekend Special</h3>
+      <p>Shanivar-Ravivar extra 20% off</p>
+      <span class="offer-code">WEEKEND</span>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section>
+  <h2 class="sec-title">Kya <span>Khana Chahte Ho?</span></h2>
+  <div class="cat-scroll">
+    <div class="cat-card active" onclick="filterCat('all',this)"><div class="icon">🍽️</div><p>Sab Kuch</p></div>
+    <div class="cat-card" onclick="filterCat('biryani',this)"><div class="icon">🍚</div><p>Biryani</p></div>
+    <div class="cat-card" onclick="filterCat('pizza',this)"><div class="icon">🍕</div><p>Pizza</p></div>
+    <div class="cat-card" onclick="filterCat('burger',this)"><div class="icon">🍔</div><p>Burger</p></div>
+    <div class="cat-card" onclick="filterCat('chinese',this)"><div class="icon">🍜</div><p>Chinese</p></div>
+    <div class="cat-card" onclick="filterCat('dessert',this)"><div class="icon">🍰</div><p>Mithai</p></div>
+    <div class="cat-card" onclick="filterCat('south',this)"><div class="icon">🥘</div><p>South Ind.</p></div>
+    <div class="cat-card" onclick="filterCat('drinks',this)"><div class="icon">🥤</div><p>Drinks</p></div>
+  </div>
+</section>
+
+<!-- RESTAURANTS -->
+<section>
+  <h2 class="sec-title">Nearby <span>Restaurants</span></h2>
+  <div class="rest-grid">
+    <div class="rest-card">
+      <div class="rest-img">🍚</div>
+      <div class="rest-body">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div class="rest-name">Lucknow Biryani House</div>
+          <span class="badge-green">Open</span>
+        </div>
+        <div class="rest-meta"><span class="star">★</span>4.5 <span>•</span> 25-35 min <span>•</span> ₹200 for 2</div>
+        <div class="rest-tags"><span class="tag">Biryani</span><span class="tag">Kebab</span><span class="tag">Mughlai</span></div>
+      </div>
+    </div>
+    <div class="rest-card">
+      <div class="rest-img">🍕</div>
+      <div class="rest-body">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div class="rest-name">Cheesy Pizza Co.</div>
+          <span class="badge-green">Open</span>
+        </div>
+        <div class="rest-meta"><span class="star">★</span>4.3 <span>•</span> 20-30 min <span>•</span> ₹350 for 2</div>
+        <div class="rest-tags"><span class="tag">Pizza</span><span class="tag">Pasta</span><span class="tag">Italian</span></div>
+      </div>
+    </div>
+    <div class="rest-card">
+      <div class="rest-img">🍔</div>
+      <div class="rest-body">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div class="rest-name">Burger Junction</div>
+          <span class="badge-orange">Busy</span>
+        </div>
+        <div class="rest-meta"><span class="star">★</span>4.6 <span>•</span> 35-45 min <span>•</span> ₹280 for 2</div>
+        <div class="rest-tags"><span class="tag">Burger</span><span class="tag">Fries</span><span class="tag">Shakes</span></div>
+      </div>
+    </div>
+    <div class="rest-card">
+      <div class="rest-img">🥘</div>
+      <div class="rest-body">
+        <div style="display:flex;justify-content:space-between;align-items:start">
+          <div class="rest-name">Dosa Paradise</div>
+          <span class="badge-green">Open</span>
+        </div>
+        <div class="rest-meta"><span class="star">★</span>4.4 <span>•</span> 20-25 min <span>•</span> ₹180 for 2</div>
+        <div class="rest-tags"><span class="tag">Dosa</span><span class="tag">Idli</span><span class="tag">South</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOD ITEMS -->
+<section>
+  <h2 class="sec-title">🌟 Popular <span>Dishes</span></h2>
+  <div class="food-grid" id="food-grid">
+    <div class="food-card" data-cat="biryani">
+      <div class="food-img">🍚</div>
+      <div class="food-body">
+        <div style="font-size:11px;margin-bottom:4px"><span class="veg-dot"></span><span style="color:var(--green);font-weight:600">Veg</span></div>
+        <div class="food-name">Lucknowi Biryani</div>
+        <div class="food-desc">Dum paka hua, aromatic basmati chawal ke saath</div>
+        <div class="food-footer"><span class="price">₹249</span><button class="add-btn" onclick="addToCart('Lucknowi Biryani',249,this)">Add +</button></div>
+      </div>
+    </div>
+    <div class="food-card" data-cat="biryani">
+      <div class="food-img">🍗</div>
+      <div class="food-body">
+        <div style="font-size:11px;margin-bottom:4px;color:#d32f2f;font-weight:600">🔴 Non-Veg</div>
+        <div class="food-name">Chicken Biryani</div>
+        <div class="food-desc">Juicy murgh ke tikde, saffron aur desi ghee</div>
+        <div class="food-footer"><span class="price">₹299</span><button class="add-btn" onclick="addToCart('Chicken Biryani',299,this)">Add +</button></div>
+      </div>
+    </div>
+    <div class="food-card" data-cat="pizza">
+      <div class="food-img">🍕</div>
+      <div class="food-body">
+        <div style="font-size:11px;margin-bottom:4px"><span class="veg-dot"></span><span style="color:var(--green);font-weight:600">Veg</span></div>
+        <div class="food-name">Paneer Tikka Pizza</div>
+        <div class="food-desc">Desi tadke ke saath Italian pizza</div>
+        <div class="food-footer"><span class="price">₹379</span><button class="add-btn" onclick="addToCart('Paneer Tikka Pizza',379,this)">Add +</button></div>
+      </div>
+    </div>
+    <div class="food-card" data-cat="burger">
+      <div class="food-img">🍔</div>
+      <div class="food-body">
+        <div style="font-size:11px;margin-bottom:4px"><span class="veg-dot"></span><span style="color:var(--green);font-weight:600">Veg</span></div>
+        <div class="food-name">Aloo Tikki Burger</div>
+        <div class="food-desc">Crispy tikki, green chutney aur tomato ke saath</div>
+        <div class="food-footer"><span class="price">₹149</span><button class="add-btn" onclick="addToCart('Aloo Tikki Burger',149,this)">Add +</button></div>
+      </div>
+    </div>
+    <div class="food-card" data-cat="chinese">
+      <div class="food-img">🍜</div>
+      <div class="food-body">
+        <div style="font-size:11px;margin-bottom:4px"><span class="veg-dot"></span><span style="color:var(--green);font-weight:600">Veg</span></div>
+        <div class="food-name">Veg Hakka Noodles</div>
+        <div class="food-desc">Desi Chinese style, tez aag par bana</div>
+        <div class="food-footer"><span class="price">₹189</span><button class="add-btn" onclick="addToCart('Veg Hakka Noodles',189,this)">Add +</button></div>
+      </div>
+    </div>
+    <div class="food-card" data-cat="dessert">
+      <div class="food-img">🍰</div>
+      <div class="food-body">
+        <div style="font-size:11px;margin-bottom:4px"><span class="veg-dot"></span><span style="color:var(--green);font-weight:600">Veg</span></div>
+        <div class="food-name">Gulab Jamun</div>
+        <div class="food-desc">Soft, meetha, chashni mein duba hua — 2 pieces</div>
+        <div class="food-footer"><span class="price">₹99</span><button class="add-btn" onclick="addToCart('Gulab Jamun',99,this)">Add +</button></div>
+      </div>
+    </div>
+    <div class="food-card" data-cat="south">
+      <div class="food-img">🥘</div>
+      <div class="food-body">
+        <div style="font-size:11px;margin-bottom:4px"><span class="veg-dot"></span><span style="color:var(--green);font-weight:600">Veg</span></div>
+        <div class="food-name">Masala Dosa</div>
+        <div class="food-desc">Crispy dosa, aloo bhaji aur sambar ke saath</div>
+        <div class="food-footer"><span class="price">₹169</span><button class="add-btn" onclick="addToCart('Masala Dosa',169,this)">Add +</button></div>
+      </div>
+    </div>
+    <div class="food-card" data-cat="drinks">
+      <div class="food-img">🥤</div>
+      <div class="food-body">
+        <div style="font-size:11px;margin-bottom:4px"><span class="veg-dot"></span><span style="color:var(--green);font-weight:600">Veg</span></div>
+        <div class="food-name">Mango Lassi</div>
+        <div class="food-desc">Thick, creamy, fresh aam se bana dahi drink</div>
+        <div class="food-footer"><span class="price">₹89</span><button class="add-btn" onclick="addToCart('Mango Lassi',89,this)">Add +</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CART OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+
+<!-- CART PANEL -->
+<div id="cart-panel">
+  <div class="cart-header">
+    <h2>🛒 Tumhari Cart</h2>
+    <button class="close-btn" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items">
+    <div class="cart-empty">
+      <div class="empty-icon">🛍️</div>
+      <p style="font-weight:600;font-size:16px;margin-bottom:4px">Cart khali hai!</p>
+      <p style="font-size:13px;">Kuch dishes add karo 😊</p>
+    </div>
+  </div>
+  <div class="cart-footer" id="cart-footer" style="display:none">
+    <div class="total-row"><span>Subtotal</span><span id="cart-subtotal">₹0</span></div>
+    <div class="total-row" style="font-size:13px;color:var(--muted)"><span>Delivery Charge</span><span>₹29</span></div>
+    <div class="total-row" style="font-size:13px;color:var(--green)"><span>Discount</span><span>-₹0</span></div>
+    <div class="total-row" style="font-size:18px;border-top:1px solid #eee;padding-top:10px;margin-top:6px">
+      <span>Total</span><span id="cart-total" style="color:var(--orange)">₹29</span>
+    </div>
+    <button class="checkout-btn" onclick="checkout()">✅ Order Place Karo</button>
+  </div>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div class="notif" id="notif"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>QuickBite 🍕</h4>
+      <p>Deoria ka sabse fast<br>food delivery app</p>
+      <p style="margin-top:10px">📱 App Store | Google Play</p>
+    </div>
+    <div class="footer-col">
+      <h4>Links</h4>
+      <a href="#">Home</a>
+      <a href="#">Restaurants</a>
+      <a href="#">Offers</a>
+      <a href="#">Track Order</a>
+    </div>
+    <div class="footer-col">
+      <h4>Help</h4>
+      <a href="#">Contact Us</a>
+      <a href="#">FAQ</a>
+      <a href="#">Return Policy</a>
+      <a href="#">Privacy Policy</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p>📞 1800-123-4567</p>
+      <p>📧 help@quickbite.in</p>
+      <p>📍 Deoria, UP</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 QuickBite. Made with ❤️ in India</div>
+</footer>
+
+<script>
+  // Search functionality
+document.getElementById('search').addEventListener('input', function() {
+  const query = this.value.toLowerCase().trim();
+  const foodCards = document.querySelectorAll('.food-card');
+  const restCards = document.querySelectorAll('.rest-card');
+
+  // Food cards filter
+  foodCards.forEach(card => {
+    const name = card.querySelector('.food-name').textContent.toLowerCase();
+    const desc = card.querySelector('.food-desc').textContent.toLowerCase();
+    card.style.display = (name.includes(query) || desc.includes(query) || query === '')
+      ? 'block' : 'none';
+  });
+
+  // Restaurant cards filter
+  restCards.forEach(card => {
+    const name = card.querySelector('.rest-name').textContent.toLowerCase();
+    card.style.display = name.includes(query) || query === ''
+      ? 'block' : 'none';
+  });
+});
+  let cart = {};
+
+  function addToCart(name, price, btn) {
+    if (cart[name]) {
+      cart[name].qty++;
+    } else {
+      cart[name] = { price: price, qty: 1 };
+    }
+    updateCartUI();
+    showNotif('🛒 ' + name + ' cart mein add hua!');
+    btn.textContent = 'Added ✓';
+    btn.style.background = 'var(--green)';
+    setTimeout(() => {
+      btn.textContent = 'Add +';
+      btn.style.background = '';
+    }, 1500);
+  }
+
+  function changeQty(name, delta) {
+    if (!cart[name]) return;
+    cart[name].qty += delta;
+    if (cart[name].qty <= 0) delete cart[name];
+    updateCartUI();
+  }
+
+  function updateCartUI() {
+    const subtotal = Object.values(cart).reduce((s, i) => s + i.price * i.qty, 0);
+    const count = Object.values(cart).reduce((s, i) => s + i.qty, 0);
+    document.getElementById('cart-count').textContent = count;
+
+    const container = document.getElementById('cart-items');
+    const footer = document.getElementById('cart-footer');
+
+    if (Object.keys(cart).length === 0) {
+      container.innerHTML = `
+        <div class="cart-empty">
+          <div class="empty-icon">🛍️</div>
+          <p style="font-weight:600;font-size:16px;margin-bottom:4px">Cart khali hai!</p>
+          <p style="font-size:13px;">Kuch dishes add karo 😊</p>
+        </div>`;
+      footer.style.display = 'none';
+      return;
+    }
+
+    footer.style.display = 'block';
+    container.innerHTML = Object.entries(cart).map(([name, item]) => `
+      <div class="cart-item">
+        <div class="cart-item-info">
+          <div class="cart-item-name">${name}</div>
+          <div class="cart-item-price">₹${item.price} × ${item.qty} = ₹${item.price * item.qty}</div>
+        </div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty('${name}', -1)">−</button>
+          <span style="font-weight:700;min-width:16px;text-align:center">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty('${name}', 1)">+</button>
+        </div>
+      </div>`).join('');
+
+    document.getElementById('cart-subtotal').textContent = '₹' + subtotal;
+    document.getElementById('cart-total').textContent = '₹' + (subtotal + 29);
+  }
+
+  function openCart() {
+    document.getElementById('cart-panel').classList.add('open');
+    document.getElementById('overlay').classList.add('show');
+  }
+
+  function closeCart() {
+    document.getElementById('cart-panel').classList.remove('open');
+    document.getElementById('overlay').classList.remove('show');
+  }
+
+  function checkout() {
+    if (Object.keys(cart).length === 0) return;
+    cart = {};
+    updateCartUI();
+    closeCart();
+    showNotif('🎉 Order place ho gaya! 30 min mein delivery hogi 🚀');
+  }
+
+  function filterCat(cat, el) {
+    document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.food-card').forEach(c => {
+      c.style.display = (cat === 'all' || c.dataset.cat === cat) ? '' : 'none';
+    });
+  }
+
+  function showNotif(msg) {
+    const n = document.getElementById('notif');
+    n.textContent = msg;
+    n.classList.add('show');
+    setTimeout(() => n.classList.remove('show'), 2500);
+  }
+</script>
+
+</body>
+</html>

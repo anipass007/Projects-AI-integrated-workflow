@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ANIPASS — Mens Street Style</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #f4f2ee;
+      --grey: #1a1a1a;
+      --mid: #2e2e2e;
+      --accent: #c8ff00;
+      --muted: #888;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: "Times New Roman";
+      font-weight: 300;
+      cursor: none;
+      overflow-x: hidden;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s ease;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(200,255,0,0.4);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transition: all 0.15s ease;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 40px;
+      background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
+      backdrop-filter: blur(2px);
+    }
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 6px;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .logo span { color: var(--accent); }
+    .nav-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 40px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 70% 40%, rgba(200,255,0,0.04) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 20% 80%, rgba(255,255,255,0.02) 0%, transparent 60%);
+    }
+    .hero-line {
+      position: absolute;
+      top: 0; right: 160px;
+      width: 1px; height: 100%;
+      background: linear-gradient(to bottom, transparent, var(--border), transparent);
+    }
+    .hero-number {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 4px;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(72px, 12vw, 160px);
+      line-height: 0.88;
+      letter-spacing: -1px;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.4s forwards;
+    }
+    .hero-title em {
+      font-style: normal;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(244,242,238,0.25);
+    }
+    .hero-sub {
+      display: flex; align-items: center; gap: 32px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.6s forwards;
+    }
+    .hero-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 260px;
+      letter-spacing: 0.3px;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: var(--accent);
+      color: var(--black);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 16px 28px;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-cta::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.1);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    .hero-cta:hover::after { transform: translateX(0); }
+    .hero-cta:hover { transform: translateY(-2px); }
+    .scroll-hint {
+      position: absolute; right: 40px; bottom: 60px;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      opacity: 0;
+      animation: fadeUp 1s ease 1s forwards;
+    }
+    .scroll-hint span {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--muted);
+      writing-mode: vertical-rl;
+    }
+    .scroll-line {
+      width: 1px; height: 60px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+      animation: scrollLine 2s ease infinite;
+    }
+    @keyframes scrollLine {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      51% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* MARQUEE */
+    .marquee-wrap {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      padding: 14px 0;
+      background: var(--grey);
+    }
+    .marquee-track {
+      display: flex; gap: 48px;
+      animation: marquee 18s linear infinite;
+      width: max-content;
+    }
+    .marquee-item {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px;
+      letter-spacing: 5px;
+      color: var(--muted);
+      white-space: nowrap;
+      display: flex; align-items: center; gap: 48px;
+    }
+    .marquee-item::after {
+      content: '✦';
+      color: var(--accent);
+      font-size: 10px;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* PRODUCTS */
+    .products {
+      padding: 100px 40px;
+    }
+    .section-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 60px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(40px, 6vw, 72px);
+      letter-spacing: 2px;
+      line-height: 1;
+    }
+    .section-count {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 2px;
+    }
+
+    /* COLOR FILTER */
+    .filters {
+      display: flex; gap: 8px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: none;
+      transition: all 0.2s ease;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--accent);
+      color: var(--white);
+    }
+    .filter-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* PRODUCT GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2px;
+    }
+    .card {
+      background: var(--grey);
+      position: relative;
+      overflow: hidden;
+      group: true;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .card.visible { opacity: 1; transform: translateY(0); }
+    .card-visual {
+      aspect-ratio: 3/4;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+    }
+    .card:hover .card-visual { transform: scale(1.03); }
+    /* T-shirt SVG placeholder */
+    .tshirt-svg {
+      width: 65%;
+      transition: transform 0.4s ease;
+    }
+    .card:hover .tshirt-svg { transform: translateY(-6px); }
+    .card-bg-pattern {
+      position: absolute; inset: 0;
+      opacity: 0.04;
+      background-image: repeating-linear-gradient(
+        45deg,
+        var(--white) 0px,
+        var(--white) 1px,
+        transparent 1px,
+        transparent 8px
+      );
+    }
+    .card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,10,10,0.8) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      display: flex; align-items: flex-end; padding: 24px;
+    }
+    .card:hover .card-overlay { opacity: 1; }
+    .card-buy {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--accent);
+      color: var(--black);
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 12px 20px;
+      width: 100%;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .card-buy:hover { background: #d4ff1a; }
+    .card-info {
+      padding: 20px 20px 24px;
+      border-top: 1px solid var(--border);
+    }
+    .card-color-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .color-swatch {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .card-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      color: var(--accent);
+      letter-spacing: 3px;
+    }
+    .card-name {
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .card-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    /* ABOUT */
+    .about {
+      padding: 100px 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      border-top: 1px solid var(--border);
+    }
+    .about-left .big-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(48px, 7vw, 96px);
+      line-height: 0.9;
+      letter-spacing: 1px;
+      margin-bottom: 32px;
+    }
+    .about-left .big-text em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .about-text {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.9;
+      max-width: 380px;
+    }
+    .stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+    .stat {
+      background: var(--grey);
+      padding: 32px;
+    }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    /* FOOTER */
+    footer {
+      padding: 40px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: 5px;
+    }
+    .footer-logo span { color: var(--accent); }
+    .footer-copy {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 2px;
+    }
+    .footer-links {
+      display: flex; gap: 24px;
+    }
+    .footer-links a {
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--accent); }
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* MOBILE */
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      .hero { padding: 0 24px 60px; }
+      .products { padding: 60px 24px; }
+      .about { grid-template-columns: 1fr; gap: 48px; padding: 60px 24px; }
+      footer { padding: 32px 24px; }
+      .section-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .scroll-hint { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">ANI<span>PASS</span></a>
+  <span class="nav-tag">Mens Street Style</span>
+</nav>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-line"></div>
+  <div class="hero-number">SS'25 — 001</div>
+  <h1 class="hero-title">
+    STREET<br>
+    <em>WEAR</em><br>
+    CULTURE
+  </h1>
+  <div class="hero-sub">
+    <p class="hero-desc">Minimal aesthetics. Bold colours. T-shirts built for those who move different.</p>
+    <a href="#products" class="hero-cta">
+      Shop Now
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M1 7h12M7 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marquee">
+    <div class="marquee-item">MINIMAL AESTHETIC</div>
+    <div class="marquee-item">STREET CULTURE</div>
+    <div class="marquee-item">ANIPASS ORIGINAL</div>
+    <div class="marquee-item">MENS STYLE 2025</div>
+    <div class="marquee-item">CLEAN FIT</div>
+    <div class="marquee-item">BOLD COLOURS</div>
+    <div class="marquee-item">MINIMAL AESTHETIC</div>
+    <div class="marquee-item">STREET CULTURE</div>
+    <div class="marquee-item">ANIPASS ORIGINAL</div>
+    <div class="marquee-item">MENS STYLE 2025</div>
+    <div class="marquee-item">CLEAN FIT</div>
+    <div class="marquee-item">BOLD COLOURS</div>
+  </div>
+</div>
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="section-header">
+    <div>
+      <div class="section-label">// Collection</div>
+      <h2 class="section-title">THE TEES</h2>
+    </div>
+    <span class="section-count">06 PIECES</span>
+  </div>
+
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="black"><span class="filter-dot" style="background:#111;border-color:#555"></span>Black</button>
+    <button class="filter-btn" data-filter="white"><span class="filter-dot" style="background:#f4f2ee"></span>White</button>
+    <button class="filter-btn" data-filter="olive"><span class="filter-dot" style="background:#5c6b3a"></span>Olive</button>
+    <button class="filter-btn" data-filter="sand"><span class="filter-dot" style="background:#c4a882"></span>Sand</button>
+    <button class="filter-btn" data-filter="slate"><span class="filter-dot" style="background:#4a5568"></span>Slate</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</section>
+<!-- ABOUT -->
+<section class="about">
+  <div class="about-left">
+    <div class="big-text">WEAR<br>THE<br><em>CODE.</em></div>
+    <p class="about-text">Anipass is built for the ones who keep it clean, keep it real. No loud logos. No hype noise. Just pure, minimal street style that speaks when you walk in.</p>
+  </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">6+</div>
+      <div class="stat-label">Colorways</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Cotton</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">OS</div>
+      <div class="stat-label">Oversized Fit</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">SS25</div>
+      <div class="stat-label">Season Drop</div>
+    </div>
+  </div>
+</section>
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">ANI<span>PASS</span></div>
+  <div class="footer-links">
+    <a href="https://pin.it/1NyK3lvhD">Pinterest</a>
+    <a href="https://www.youtube.com/@anipass007">YouTube</a>
+    <a href="https://www.instagram.com/mensstreetstyle.in?igsh=MTZoZXAzbGppb3N6OQ==">Instagram</a>
+    <a href="https://www.instagram.com/mensstreetstyle.in?igsh=MTZoZXAzbGppb3N6OQ==">Contact</a>
+  </div>
+  <div class="footer-copy">© 2025 ANIPASS — ALL RIGHTS RESERVED</div>
+</footer>
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animateCursor() {
+    cursor.style.transform = `translate(${mx - 5}px, ${my - 5}px)`;
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.transform = `translate(${rx - 18}px, ${ry - 18}px)`;
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+  // Products data 
+  const products = [
+    {
+      id: 1, name: "Void Tee", color: "black", hex: "#111111",
+      tag: "BESTSELLER", desc: "Oversized drop shoulder. Pure black.",
+      affiliate_link: "https://amzn.to/4xeeEHL"
+    },
+    {
+      id: 2, name: "Blank Canvas", color: "white", hex: "#f4f2ee",
+      tag: "NEW DROP", desc: "Clean white. Zero noise.",
+      affiliate_link: "https://amzn.to/4uV4V7O"
+    },
+    {
+      id: 3, name: "Field Tee", color: "olive", hex: "#5c6b3a",
+      tag: "LIMITED", desc: "Earthy tone. Street ready.",
+      affiliate_link: "https://amzn.to/4ukcVhk"
+    },
+    {
+      id: 4, name: "Desert Run", color: "sand", hex: "#c4a882",
+      tag: "SEASONAL", desc: "Warm sand. Effortless fit.",
+      affiliate_link: "https://amzn.to/4vx73lY"
+    },
+    {
+      id: 5, name: "Ash Block", color: "slate", hex: "#4a5568",
+      tag: "CORE", desc: "Slate grey. All day wear.",
+      affiliate_link: "https://amzn.to/49K8jtH"
+    },
+    {
+      id: 6, name: "Phantom", color: "black", hex: "#1a1a1a",
+      tag: "ESSENTIAL", desc: "Charcoal black. Minimal edge.",
+      affiliate_link: "https://amzn.to/4uN13pc"
+    }
+  ];
+  function getTshirtSVG(hex) {
+    const isDark = hex === '#111111' || hex === '#1a1a1a' || hex === '#4a5568' || hex === '#5c6b3a';
+    const stroke = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)';
+    return `
+      <svg class="tshirt-svg" viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M60 20 C60 20 80 30 100 30 C120 30 140 20 140 20 L170 60 L148 72 L148 200 L52 200 L52 72 L30 60 Z"
+          fill="${hex}" stroke="${stroke}" stroke-width="1.5"/>
+        <path d="M60 20 L52 72 L30 60 L60 20Z" fill="${hex === '#f4f2ee' ? '#e8e6e2' : 'rgba(0,0,0,0.15)'}" />
+        <path d="M140 20 L148 72 L170 60 L140 20Z" fill="${hex === '#f4f2ee' ? '#e8e6e2' : 'rgba(0,0,0,0.15)'}" />
+        <path d="M75 30 Q100 42 125 30" stroke="${stroke}" stroke-width="1" fill="none"/>
+      </svg>`;
+  }
+  function getBgColor(hex) {
+    const map = {
+      '#111111': '#141414',
+      '#f4f2ee': '#1e1e1c',
+      '#5c6b3a': '#161a0f',
+      '#c4a882': '#1c1810',
+      '#4a5568': '#111520',
+      '#1a1a1a': '#161616'
+    };
+    return map[hex] || '#1a1a1a';
+  }
+  function renderProducts(filter = 'all') {
+    const grid = document.getElementById('grid');
+    const filtered = filter === 'all' ? products : products.filter(p => p.color === filter);
+    grid.innerHTML = filtered.map((p, i) => `
+      <div class="card" style="transition-delay:${i * 0.08}s">
+        <div class="card-visual" style="background:${getBgColor(p.hex)}">
+          <div class="card-bg-pattern"></div>
+          ${getTshirtSVG(p.hex)}
+          <div class="card-overlay">
+            <a href="${p.affiliate_link}" target="_blank" rel="noopener" class="card-buy">
+              Shop Now
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+        <div class="card-info">
+          <div class="card-color-row">
+            <div class="color-swatch" style="background:${p.hex}"></div>
+            <span class="card-tag">${p.tag}</span>
+          </div>
+          <div class="card-name">${p.name}</div>
+          <div class="card-desc">${p.desc}</div>
+        </div>
+      </div>
+    `).join('');
+    // Animate cards
+    setTimeout(() => {
+      document.querySelectorAll('.card').forEach(c => c.classList.add('visible'));
+    }, 50);
+  }
+  // Filters
+  document.getElementById('filters').addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderProducts(btn.dataset.filter);
+  });
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  renderProducts();
+  setTimeout(() => {
+    document.querySelectorAll('.card').forEach(c => observer.observe(c));
+  }, 100);
+</script>
+</body>
+</html>

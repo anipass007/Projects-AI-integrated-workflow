@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Comic World</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --card: #1a1a25;
+      --border: #2a2a3a;
+      --accent: #f7c948;
+      --accent2: #e63946;
+      --accent3: #4cc9f0;
+      --text: #f0f0f5;
+      --muted: #888899;
+      --hero-dot: rgba(247,201,72,0.07);
+      --nav-blur: rgba(10,10,15,0.85);
+      --shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+    [data-theme="light"] {
+      --bg: #f5f5f0;
+      --surface: #ffffff;
+      --card: #ffffff;
+      --border: #e0e0e8;
+      --accent: #e6b800;
+      --accent2: #e63946;
+      --accent3: #0096c7;
+      --text: #111118;
+      --muted: #666677;
+      --hero-dot: rgba(230,184,0,0.08);
+      --nav-blur: rgba(245,245,240,0.85);
+      --shadow: 0 8px 32px rgba(0,0,0,0.12);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    html { scroll-behavior:smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background 0.4s, color 0.4s;
+      overflow-x: hidden;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%;
+      height: 64px;
+      backdrop-filter: blur(18px);
+      background: var(--nav-blur);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Bangers', cursive;
+      font-size: 2rem;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-shadow: 3px 3px 0 var(--accent2);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex; gap: 28px; list-style: none;
+    }
+    .nav-links a {
+      color: var(--text); text-decoration: none;
+      font-weight: 700; font-size: 0.9rem;
+      letter-spacing: 0.5px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+    .search-bar {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 50px; padding: 7px 16px;
+      color: var(--text); font-size: 0.85rem; font-family: inherit;
+      outline: none; width: 180px;
+      transition: border-color 0.2s, width 0.3s;
+    }
+    .search-bar:focus { border-color: var(--accent); width: 220px; }
+    .search-bar::placeholder { color: var(--muted); }
+    .theme-btn {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 50%; width: 38px; height: 38px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .theme-btn:hover { background: var(--accent); transform: rotate(20deg); }
+
+    /* ── HERO ── */
+    .hero {
+      padding-top: 64px;
+      min-height: 100vh;
+      display: flex; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .hero-dots {
+      position: absolute; inset: 0; z-index: 0;
+      background-image: radial-gradient(var(--hero-dot) 1.5px, transparent 1.5px);
+      background-size: 28px 28px;
+    }
+    .hero-glow {
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(247,201,72,0.12), transparent 70%);
+      top: 10%; right: 5%;
+      pointer-events: none;
+    }
+    .hero-content {
+      position: relative; z-index: 1;
+      padding: 0 5%;
+      max-width: 700px;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(230,57,70,0.12); border: 1px solid var(--accent2);
+      border-radius: 50px; padding: 5px 14px;
+      font-size: 0.78rem; font-weight: 700; color: var(--accent2);
+      letter-spacing: 1px; text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero-badge span { width: 6px; height: 6px; background: var(--accent2); border-radius: 50%; animation: pulse 1.2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.5)} }
+    .hero h1 {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(3.5rem, 9vw, 7rem);
+      line-height: 0.95;
+      letter-spacing: 3px;
+      margin-bottom: 18px;
+    }
+    .hero h1 .line1 { color: var(--text); }
+    .hero h1 .line2 {
+      color: var(--accent);
+      text-shadow: 4px 4px 0 var(--accent2);
+      display: block;
+    }
+    .hero p {
+      color: var(--muted); font-size: 1.05rem;
+      line-height: 1.7; max-width: 500px; margin-bottom: 32px;
+    }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent); color: #111;
+      border: none; border-radius: 50px;
+      padding: 13px 30px; font-weight: 900;
+      font-size: 0.95rem; font-family: inherit;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 4px 4px 0 var(--accent2);
+    }
+    .btn-primary:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--accent2); }
+    .btn-secondary {
+      background: transparent; color: var(--text);
+      border: 1.5px solid var(--border); border-radius: 50px;
+      padding: 13px 30px; font-weight: 700;
+      font-size: 0.95rem; font-family: inherit;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .hero-stats {
+      display: flex; gap: 36px; margin-top: 48px; flex-wrap: wrap;
+    }
+    .stat-item { text-align: left; }
+    .stat-num {
+      font-family: 'Bangers', cursive;
+      font-size: 2rem; letter-spacing: 1px; color: var(--accent);
+    }
+    .stat-label { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+
+    /* ── FEATURED STRIP ── */
+    .featured-strip {
+      background: var(--accent);
+      padding: 14px 5%;
+      overflow: hidden; white-space: nowrap;
+    }
+    .strip-inner {
+      display: inline-block;
+      animation: marquee 18s linear infinite;
+      font-family: 'Bangers', cursive;
+      font-size: 1rem; letter-spacing: 3px;
+      color: #111; text-transform: uppercase;
+    }
+    @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+    /* ── SECTION COMMON ── */
+    section { padding: 72px 5%; }
+    .section-header {
+      display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap;
+      gap: 16px; margin-bottom: 36px;
+    }
+    .section-title {
+      font-family: 'Bangers', cursive;
+      font-size: 2.4rem; letter-spacing: 2px;
+    }
+    .section-title span { color: var(--accent); }
+    .see-all {
+      color: var(--accent); text-decoration: none;
+      font-weight: 700; font-size: 0.9rem;
+      border: 1.5px solid var(--accent); border-radius: 50px;
+      padding: 6px 18px; transition: background 0.2s, color 0.2s;
+    }
+    .see-all:hover { background: var(--accent); color: #111; }
+
+    /* ── FILTERS ── */
+    .filter-bar {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px;
+    }
+    .filter-btn {
+      padding: 8px 20px; border-radius: 50px;
+      border: 1.5px solid var(--border);
+      background: transparent; color: var(--muted);
+      font-family: inherit; font-weight: 700; font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .filter-btn.active {
+      background: var(--accent); border-color: var(--accent);
+      color: #111;
+    }
+
+    /* ── COMIC GRID ── */
+    .comics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+    }
+    .comic-card {
+      background: var(--card); border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s;
+      position: relative;
+    }
+    .comic-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); }
+    .comic-card.hidden { display: none; }
+    .comic-thumb {
+      width: 100%; aspect-ratio: 2/3;
+      object-fit: cover; display: block;
+      background: var(--border);
+      position: relative;
+    }
+    .comic-thumb-placeholder {
+      width: 100%; aspect-ratio: 2/3;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      position: relative;
+    }
+    .badge-tag {
+      position: absolute; top: 10px; left: 10px;
+      font-size: 0.65rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 1px; padding: 3px 10px; border-radius: 50px;
+    }
+    .badge-hot { background: var(--accent2); color: #fff; }
+    .badge-new { background: var(--accent3); color: #fff; }
+    .badge-top { background: var(--accent); color: #111; }
+    .comic-info { padding: 12px 14px 14px; }
+    .comic-title {
+      font-weight: 900; font-size: 0.9rem;
+      line-height: 1.3; margin-bottom: 6px;
+    }
+    .comic-meta {
+      display: flex; justify-content: space-between;
+      align-items: center;
+    }
+    .comic-genre {
+      font-size: 0.72rem; color: var(--muted); font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .comic-rating {
+      font-size: 0.75rem; font-weight: 900; color: var(--accent);
+    }
+    .comic-episodes {
+      font-size: 0.72rem; color: var(--muted);
+      margin-top: 4px; font-weight: 600;
+    }
+
+    /* ── TRENDING BANNER ── */
+    .trending-banner {
+      background: linear-gradient(135deg, var(--accent2) 0%, #c1121f 100%);
+      border-radius: 20px; padding: 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 24px; margin-bottom: 48px;
+    }
+    .trending-banner h2 {
+      font-family: 'Bangers', cursive; font-size: 2.5rem;
+      color: #fff; letter-spacing: 2px;
+    }
+    .trending-banner p { color: rgba(255,255,255,0.8); max-width: 400px; }
+    .btn-white {
+      background: #fff; color: var(--accent2);
+      border: none; border-radius: 50px;
+      padding: 13px 30px; font-weight: 900;
+      font-size: 0.95rem; font-family: inherit;
+      transition: transform 0.2s; box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+    }
+    .btn-white:hover { transform: translate(-2px,-2px); }
+
+    /* ── CATEGORIES ── */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 14px;
+    }
+    .category-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 22px 16px;
+      text-align: center;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .category-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+    .cat-icon { font-size: 2.2rem; margin-bottom: 8px; }
+    .cat-name { font-weight: 900; font-size: 0.88rem; }
+    .cat-count { color: var(--muted); font-size: 0.75rem; }
+
+    /* ── NEWSLETTER ── */
+    .newsletter {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px; padding: 56px;
+      text-align: center; max-width: 600px; margin: 0 auto;
+    }
+    .newsletter h2 {
+      font-family: 'Bangers', cursive; font-size: 2.6rem;
+      letter-spacing: 2px; margin-bottom: 12px;
+    }
+    .newsletter h2 span { color: var(--accent); }
+    .newsletter p { color: var(--muted); margin-bottom: 28px; }
+    .nl-form { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .nl-input {
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 50px; padding: 13px 22px;
+      color: var(--text); font-family: inherit; font-size: 0.95rem;
+      outline: none; flex: 1; min-width: 200px;
+      transition: border-color 0.2s;
+    }
+    .nl-input:focus { border-color: var(--accent); }
+    .nl-input::placeholder { color: var(--muted); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 56px 5% 32px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px; margin-bottom: 40px;
+    }
+    .footer-brand .nav-logo { display: block; margin-bottom: 14px; font-size: 2.4rem; }
+    .footer-brand p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+    .footer-socials { display: flex; gap: 10px; margin-top: 18px; }
+    .social-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--card); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; 
+      transition: background 0.2s, transform 0.2s;
+      text-decoration: none; color: var(--text);
+    }
+    .social-btn:hover { background: var(--accent); transform: translateY(-3px); }
+    .footer-col h4 {
+      font-weight: 900; font-size: 0.9rem;
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 16px; color: var(--accent);
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 10px; }
+    .footer-col ul li a {
+      color: var(--muted); text-decoration: none;
+      font-size: 0.9rem; font-weight: 600;
+      transition: color 0.2s;
+    }
+    .footer-col ul li a:hover { color: var(--text); }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 12px;
+      padding-top: 24px; border-top: 1px solid var(--border);
+      font-size: 0.82rem; color: var(--muted); font-weight: 600;
+    }
+    .footer-bottom a { color: var(--accent); text-decoration: none; }
+
+    /* ── MOBILE NAV ── */
+    .hamburger {
+      display: none; background: none; border: none;
+      font-size: 1.4rem; color: var(--text);
+    }
+    @media(max-width:768px) {
+      .nav-links { display: none; }
+      .hamburger { display: block; }
+      .search-bar { display:none; }
+      .hero h1 { font-size: 3.5rem; }
+      .hero-stats { gap: 24px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .trending-banner { text-align: center; justify-content: center; }
+      .newsletter { padding: 36px 24px; }
+    }
+    @media(max-width:480px) {
+      .search-bar{display: block;}
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#" class="nav-logo">⚡ ComicWorld</a>
+  <ul class="nav-links">
+    <li><a href="#browse">Browse</a></li>
+    <li><a href="#trending">Trending</a></li>
+    <li><a href="#categories">Categories</a></li>
+    <li><a href="#newsletter">Newsletter</a></li>
+  </ul>
+  <div class="nav-right">
+    <input class="search-bar" type="text" placeholder="Search comics…" id="searchInput"/>
+    <button class="theme-btn" id="themeToggle" title="Toggle theme">🌙</button>
+    <button class="hamburger" id="hamburger">☰</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-dots"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span></span> New Issue Every Week</div>
+    <h1>
+      <span class="line1">READ THE</span>
+      <span class="line2">WORLD'S<br>COMICS</span>
+    </h1>
+    <p>Thousands of comics — superhero, manga, webtoon, indie — all in one place. Filter by length, genre, or rating and dive in instantly.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('browse').scrollIntoView({behavior:'smooth'})">🔥 Start Reading</button>
+      <button class="btn-secondary" onclick="document.getElementById('categories').scrollIntoView({behavior:'smooth'})">Explore Categories</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-num">12K+</div><div class="stat-label">Comics</div></div>
+      <div class="stat-item"><div class="stat-num">8.4M</div><div class="stat-label">Readers</div></div>
+      <div class="stat-item"><div class="stat-num">340+</div><div class="stat-label">Genres</div></div>
+      <div class="stat-item"><div class="stat-num">4.9★</div><div class="stat-label">Avg Rating</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE STRIP -->
+<div class="featured-strip">
+  <div class="strip-inner">
+    🔥 TRENDING NOW &nbsp;★&nbsp; DARK KNIGHT RETURNS &nbsp;★&nbsp; ONE PUNCH MAN &nbsp;★&nbsp; INVINCIBLE &nbsp;★&nbsp; SAGA &nbsp;★&nbsp; DEMON SLAYER &nbsp;★&nbsp; WATCHMEN &nbsp;★&nbsp; SPIDER-MAN &nbsp;★&nbsp; NARUTO &nbsp;★&nbsp; BERSERK &nbsp;★&nbsp; MY HERO ACADEMIA &nbsp;★&nbsp;
+    🔥 TRENDING NOW &nbsp;★&nbsp; DARK KNIGHT RETURNS &nbsp;★&nbsp; ONE PUNCH MAN &nbsp;★&nbsp; INVINCIBLE &nbsp;★&nbsp; SAGA &nbsp;★&nbsp; DEMON SLAYER &nbsp;★&nbsp; WATCHMEN &nbsp;★&nbsp; SPIDER-MAN &nbsp;★&nbsp; NARUTO &nbsp;★&nbsp; BERSERK &nbsp;★&nbsp; MY HERO ACADEMIA &nbsp;★&nbsp;
+  </div>
+</div>
+
+<!-- BROWSE -->
+<section id="browse">
+  <div class="section-header reveal">
+    <h2 class="section-title">Browse <span>Comics</span></h2>
+    <a href="#" class="see-all">See All →</a>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-bar reveal" id="filterBar">
+    <button class="filter-btn active" data-filter="all">⚡ All</button>
+    <button class="filter-btn" data-filter="best">🏆 Best</button>
+    <button class="filter-btn" data-filter="popular">🔥 Popular</button>
+    <button class="filter-btn" data-filter="long">📚 Long Series</button>
+    <button class="filter-btn" data-filter="short">⚡ Short Read</button>
+    <button class="filter-btn" data-filter="new">🆕 New</button>
+  </div>
+
+  <div class="comics-grid" id="comicsGrid">
+    <!-- cards injected by JS -->
+  </div>
+</section>
+
+<!-- TRENDING BANNER -->
+<section id="trending" style="padding-top:0">
+  <div class="trending-banner reveal">
+    <div>
+      <h2>🔥 This Week's Hottest</h2>
+      <p>Don't miss the most-read comics of the week. Updated every Monday.</p>
+    </div>
+    <button class="btn-white">View All →</button>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section id="categories">
+  <div class="section-header reveal">
+    <h2 class="section-title">Explore <span>Categories</span></h2>
+  </div>
+  <div class="categories-grid reveal" id="categoriesGrid"></div>
+</section>
+
+<!-- NEWSLETTER -->
+<section id="newsletter" style="padding-top:0">
+  <div class="newsletter reveal">
+    <h2>Stay <span>Updated</span></h2>
+    <p>New issues, exclusive previews, and weekly top-picks — straight to your inbox.</p>
+    <div class="nl-form">
+      <input class="nl-input" type="email" placeholder="Your email address"/>
+      <button class="btn-primary">Subscribe 🚀</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">⚡ ComicWorld</a>
+      <p>The ultimate destination for comic readers worldwide. Discover, read, and share the stories that matter.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-btn">𝕏</a>
+        <a href="#" class="social-btn">📘</a>
+        <a href="#" class="social-btn">📸</a>
+        <a href="#" class="social-btn">▶️</a>
+        <a href="#" class="social-btn">💬</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Browse</h4>
+      <ul>
+        <li><a href="#">Best Comics</a></li>
+        <li><a href="#">Popular Series</a></li>
+        <li><a href="#">New Releases</a></li>
+        <li><a href="#">Short Reads</a></li>
+        <li><a href="#">Long Series</a></li>
+      </ul>
+    </div>
+      </div>
+  <div class="footer-bottom">
+    <span>© 2025 ComicWorld. All rights reserved.</span>
+    <span>Made with ❤️ for comic lovers · <a href="#">Terms</a> · <a href="#">Privacy</a></span>
+  </div>
+</footer>
+
+<script>
+  /* ─── DATA ─── */
+  const comics = [
+    { title:"Dark Knight Returns", genre:"Superhero", rating:"9.8", episodes:"6 Issues", badge:"top", filter:["best","long"] },
+    { title:"One Punch Man", genre:"Action · Manga", rating:"9.6", episodes:"30 Volumes", badge:"hot", filter:["popular","long"] },
+    { title:"Invincible", genre:"Superhero", rating:"9.5", episodes:"144 Issues", badge:"top", filter:["best","long"] },
+    { title:"Saga", genre:"Sci-Fi · Drama", rating:"9.7", episodes:"66 Issues", badge:"hot", filter:["popular","best"] },
+    { title:"Demon Slayer", genre:"Manga · Action", rating:"9.4", episodes:"23 Volumes", badge:"new", filter:["popular","long"] },
+    { title:"Watchmen", genre:"Superhero · Mystery", rating:"9.9", episodes:"12 Issues", badge:"top", filter:["best","short"] },
+    { title:"The Walking Dead", genre:"Horror · Drama", rating:"9.2", episodes:"193 Issues", badge:"hot", filter:["popular","long"] },
+    { title:"Maus", genre:"Biography", rating:"9.7", episodes:"2 Volumes", badge:"top", filter:["best","short"] },
+    { title:"Berserk", genre:"Dark Fantasy", rating:"9.6", episodes:"41 Volumes", badge:"hot", filter:["popular","long"] },
+    { title:"Bone", genre:"Fantasy · Comedy", rating:"8.9", episodes:"9 Volumes", badge:"new", filter:["new","short"] },
+    { title:"Blankets", genre:"Memoir", rating:"9.0", episodes:"1 Volume", badge:"top", filter:["best","short"] },
+    { title:"Sandman", genre:"Fantasy · Horror", rating:"9.4", episodes:"75 Issues", badge:"hot", filter:["popular","long"] },
+  ];
+
+  const categories = [
+    { icon:"🦸", name:"Superhero", count:"2.4K" },
+    { icon:"⚔️", name:"Action", count:"3.1K" },
+    { icon:"💀", name:"Horror", count:"1.2K" },
+    { icon:"🚀", name:"Sci-Fi", count:"1.8K" },
+    { icon:"💕", name:"Romance", count:"2.2K" },
+    { icon:"🔮", name:"Fantasy", count:"2.9K" },
+    { icon:"😂", name:"Comedy", count:"1.5K" },
+    { icon:"🕵️", name:"Mystery", count:"980" },
+    { icon:"📖", name:"Manga", count:"4.2K" },
+    { icon:"🌊", name:"Webtoon", count:"1.6K" },
+  ];
+
+  const colors = [
+    ["#1a1a25","#f7c948"],["#1a1a25","#e63946"],["#1a1a25","#4cc9f0"],
+    ["#1a1a25","#7bed9f"],["#1a1a25","#ff9f43"],["#1a1a25","#a29bfe"],
+    ["#1a1a25","#fd79a8"],["#1a1a25","#55efc4"],["#1a1a25","#fdcb6e"],
+    ["#1a1a25","#e17055"],["#1a1a25","#74b9ff"],["#1a1a25","#b2bec3"],
+  ];
+
+  /* ─── RENDER COMICS ─── */
+  function renderComics(filter = "all") {
+    const grid = document.getElementById("comicsGrid");
+    grid.innerHTML = "";
+    comics.forEach((c, i) => {
+      const show = filter === "all" || c.filter.includes(filter);
+      const [bg, fc] = colors[i % colors.length];
+      const badgeClass = {hot:"badge-hot",new:"badge-new",top:"badge-top"}[c.badge] || "badge-top";
+      const card = document.createElement("div");
+      card.className = "comic-card reveal" + (show ? "" : " hidden");
+      card.innerHTML = `
+        <div class="comic-thumb-placeholder" style="background:${bg}">
+          <span style="font-size:3.2rem;color:${fc}">${c.genre.split("·")[0].trim().slice(0,2)}</span>
+          <span class="badge-tag ${badgeClass}">${c.badge === "hot" ? "🔥 Hot" : c.badge === "new" ? "✨ New" : "👑 Top"}</span>
+        </div>
+        <div class="comic-info">
+          <div class="comic-title">${c.title}</div>
+          <div class="comic-meta">
+            <span class="comic-genre">${c.genre}</span>
+            <span class="comic-rating">★ ${c.rating}</span>
+          </div>
+          <div class="comic-episodes">${c.episodes}</div>
+        </div>`;
+      grid.appendChild(card);
+    });
+    observeReveal();
+  }
+
+  /* ─── RENDER CATEGORIES ─── */
+  function renderCategories() {
+    const grid = document.getElementById("categoriesGrid");
+    categories.forEach(cat => {
+      const el = document.createElement("div");
+      el.className = "category-card reveal";
+      el.innerHTML = `<div class="cat-icon">${cat.icon}</div><div class="cat-name">${cat.name}</div><div class="cat-count">${cat.count} titles</div>`;
+      grid.appendChild(el);
+    });
+    observeReveal();
+  }
+
+  /* ─── FILTERS ─── */
+  document.getElementById("filterBar").addEventListener("click", e => {
+    const btn = e.target.closest(".filter-btn");
+    if (!btn) return;
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    renderComics(btn.dataset.filter);
+  });
+
+  /* ─── SEARCH ─── */
+  document.getElementById("searchInput").addEventListener("input", e => {
+    const q = e.target.value.toLowerCase().trim();
+    document.querySelectorAll(".comic-card").forEach((card, i) => {
+      const title = comics[i]?.title?.toLowerCase() || "";
+      const genre = comics[i]?.genre?.toLowerCase() || "";
+      card.classList.toggle("hidden", q && !title.includes(q) && !genre.includes(q));
+    });
+  });
+
+  /* ─── DARK MODE ─── */
+  const themeBtn = document.getElementById("themeToggle");
+  let isDark = true;
+  themeBtn.addEventListener("click", () => {
+    isDark = !isDark;
+    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+    themeBtn.textContent = isDark ? "🌙" : "☀️";
+  });
+
+  /* ─── SCROLL REVEAL ─── */
+  function observeReveal() {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll(".reveal:not(.visible)").forEach(el => io.observe(el));
+  }
+
+  /* ─── INIT ─── */
+  renderComics();
+  renderCategories();
+  observeReveal();
+</script>
+</body>
+</html>

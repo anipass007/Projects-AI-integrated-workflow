@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MotoZone – Bike Showroom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0D0D1A; --surface: #161627; --card: #1E1E35;
+      --orange: #FF6B2B; --orange2: #FF8C55;
+      --silver: #A8B2C8; --white: #F0F2FF; --border: #2A2A45; --nav-h: 68px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--white); min-height: 100vh; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h);
+      background: rgba(13,13,26,.93); backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 5%; z-index: 999;
+      justify-content: space-between;
+    }
+    .logo { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; }
+    .logo span { color: var(--orange); }
+    .nav-links { display: flex; gap: 4px; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--silver); font-size: .85rem; font-weight: 500;
+      padding: 8px 16px; border-radius: 6px; transition: all .2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--white); background: var(--orange); }
+    .nav-cta { background: var(--orange) !important; color: var(--white) !important; font-weight: 600 !important; }
+    .nav-cta:hover { background: var(--orange2) !important; }
+
+    /* HERO */
+    #home {
+      min-height: 100vh; padding-top: var(--nav-h);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      background: radial-gradient(ellipse 70% 50% at 50% 60%, rgba(255,107,43,.12) 0%, transparent 70%),
+                  linear-gradient(160deg, #0D0D1A 60%, #1a0f08 100%);
+      position: relative; overflow: hidden;
+    }
+    #home::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-eye { font-size: .75rem; letter-spacing: 4px; color: var(--orange); text-transform: uppercase; margin-bottom: 18px; }
+    .hero-title { font-family: 'Orbitron', sans-serif; font-size: clamp(2.4rem, 6vw, 5rem); font-weight: 900; line-height: 1.1; margin-bottom: 18px; }
+    .hero-title em { color: var(--orange); font-style: normal; }
+    .hero-sub { color: var(--silver); font-size: 1.05rem; font-weight: 300; max-width: 520px; margin: 0 auto 38px; line-height: 1.7; }
+    .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--orange); color: #fff; padding: 14px 34px; border-radius: 8px;
+      font-weight: 600; font-size: .95rem; border: none; cursor: pointer;
+      transition: transform .15s, background .2s; text-decoration: none; display: inline-block;
+    }
+    .btn-primary:hover { background: var(--orange2); transform: translateY(-2px); }
+    .btn-ghost {
+      border: 1.5px solid var(--border); color: var(--white); padding: 14px 34px; border-radius: 8px;
+      font-weight: 500; font-size: .95rem; background: transparent; cursor: pointer;
+      transition: border-color .2s, color .2s; text-decoration: none; display: inline-block;
+    }
+    .btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
+    .hero-stats { margin-top: 60px; display: flex; gap: 48px; justify-content: center; flex-wrap: wrap; }
+    .stat-item { text-align: center; }
+    .stat-num { font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 700; color: var(--orange); }
+    .stat-lbl { font-size: .75rem; color: var(--silver); letter-spacing: 1px; margin-top: 4px; }
+
+    /* SECTION BASE */
+    section { padding: 80px 5%; }
+    .section-eye { font-size: .72rem; letter-spacing: 4px; color: var(--orange); text-transform: uppercase; margin-bottom: 10px; }
+    .section-title { font-family: 'Orbitron', sans-serif; font-size: clamp(1.6rem, 3.5vw, 2.4rem); font-weight: 700; margin-bottom: 12px; }
+    .section-sub { color: var(--silver); font-size: .95rem; margin-bottom: 36px; max-width: 500px; }
+
+    /* SEARCH */
+    .search-bar-wrap { display: flex; gap: 12px; max-width: 680px; margin-bottom: 28px; }
+    .search-bar {
+      flex: 1; background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 8px; color: var(--white); font-size: .95rem;
+      padding: 13px 18px; outline: none; transition: border-color .2s;
+    }
+    .search-bar:focus { border-color: var(--orange); }
+    .search-bar::placeholder { color: var(--silver); }
+    .search-btn {
+      background: var(--orange); color: #fff; border: none; border-radius: 8px;
+      padding: 13px 24px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background .2s;
+    }
+    .search-btn:hover { background: var(--orange2); }
+
+    /* FILTERS */
+    .filter-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px; }
+    .filter-chip {
+      padding: 7px 18px; border-radius: 30px; border: 1.5px solid var(--border);
+      background: transparent; color: var(--silver); font-size: .82rem; cursor: pointer; transition: all .2s;
+    }
+    .filter-chip:hover, .filter-chip.active { border-color: var(--orange); color: var(--orange); background: rgba(255,107,43,.08); }
+
+    /* GRID */
+    .bikes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 22px; }
+
+    /* NO RESULT */
+    .no-result { display: none; text-align: center; color: var(--silver); padding: 60px 0; font-size: 1rem; }
+
+    /* BIKE CARD */
+    .bike-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden; transition: transform .25s, border-color .25s, box-shadow .25s;
+      cursor: default; animation: fadeUp .4s ease both;
+    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+    .bike-card:hover { transform: translateY(-6px); border-color: var(--orange); box-shadow: 0 20px 48px rgba(255,107,43,.15); }
+    .bike-img-wrap {
+      height: 200px; background: var(--surface);
+      display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+    }
+    
+    /* MODIFIED: Styling for Real Bike Images */
+    .bike-img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+      transition: transform .35s; 
+    }
+    .bike-card:hover .bike-img { transform: scale(1.08); }
+    
+    .badge {
+      position: absolute; top: 12px; right: 12px;
+      padding: 4px 12px; border-radius: 30px; font-size: .72rem; font-weight: 600; letter-spacing: .5px;
+      z-index: 2;
+    }
+    .badge-new  { background: #22c55e22; color: #22c55e; border: 1px solid #22c55e55; }
+    .badge-old  { background: #f59e0b22; color: #f59e0b; border: 1px solid #f59e0b55; }
+    .badge-hot  { background: #ef444422; color: #ef4444; border: 1px solid #ef444455; }
+    .bike-body { padding: 20px 22px 22px; }
+    .bike-brand { font-size: .72rem; letter-spacing: 2px; color: var(--orange); text-transform: uppercase; margin-bottom: 4px; }
+    .bike-name { font-family: 'Orbitron', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; }
+    .bike-model { color: var(--silver); font-size: .82rem; margin-bottom: 14px; }
+    .bike-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+    .spec { background: var(--surface); border-radius: 8px; padding: 9px 12px; }
+    .spec-lbl { font-size: .68rem; color: var(--silver); letter-spacing: .5px; }
+    .spec-val { font-size: .88rem; font-weight: 600; margin-top: 2px; }
+    .bike-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 14px; }
+    .bike-price { font-family: 'Orbitron', sans-serif; font-size: 1.15rem; color: var(--orange); font-weight: 700; }
+    .bike-price span { font-size: .7rem; color: var(--silver); font-family: 'Inter', sans-serif; font-weight: 400; display: block; }
+    .detail-btn {
+      background: var(--orange); color: #fff; border: none; border-radius: 6px;
+      padding: 8px 16px; font-size: .8rem; font-weight: 600; cursor: pointer; transition: background .2s;
+    }
+    .detail-btn:hover { background: var(--orange2); }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,.8);
+      backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+      max-width: 700px; width: 100%; max-height: 88vh; overflow-y: auto;
+      animation: popIn .3s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes popIn { from { opacity: 0; transform: scale(.88); } to { opacity: 1; transform: scale(1); } }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 22px 26px; border-bottom: 1px solid var(--border); }
+    .modal-close {
+      width: 36px; height: 36px; border-radius: 50%; background: var(--surface);
+      border: 1px solid var(--border); color: var(--white); font-size: 1.1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s;
+    }
+    .modal-close:hover { background: var(--orange); }
+    .modal-body { padding: 26px; }
+    
+    /* MODIFIED: Modal Image Container Styling */
+    .modal-bike-hero {
+      height: 320px; background: var(--surface); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 24px;
+    }
+    .modal-bike-hero img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    
+    .modal-specs-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 24px; }
+    .modal-spec { background: var(--surface); border-radius: 10px; padding: 14px; text-align: center; }
+    .modal-spec-lbl { font-size: .7rem; color: var(--silver); letter-spacing: .5px; }
+    .modal-spec-val { font-size: 1rem; font-weight: 600; margin-top: 4px; }
+    .modal-desc { color: var(--silver); font-size: .9rem; line-height: 1.7; margin-bottom: 24px; }
+    .modal-price-row { display: flex; align-items: center; justify-content: space-between; background: var(--surface); border-radius: 12px; padding: 18px 22px; }
+    .modal-price { font-family: 'Orbitron', sans-serif; font-size: 1.6rem; color: var(--orange); font-weight: 700; }
+
+    /* ABOUT */
+    #about { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .about-text h2 { font-family: 'Orbitron', sans-serif; font-size: 2rem; margin-bottom: 16px; }
+    .about-text p { color: var(--silver); line-height: 1.8; margin-bottom: 14px; }
+    .about-feat { display: flex; flex-direction: column; gap: 16px; }
+    .feat-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; display: flex; gap: 16px; align-items: flex-start; transition: border-color .2s; }
+    .feat-item:hover { border-color: var(--orange); }
+    .feat-icon { font-size: 1.6rem; }
+    .feat-title { font-weight: 600; margin-bottom: 4px; }
+    .feat-desc { font-size: .84rem; color: var(--silver); line-height: 1.5; }
+
+    /* CONTACT */
+    #contact { background: var(--bg); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .contact-info p { color: var(--silver); line-height: 1.8; margin-bottom: 24px; }
+    .contact-detail { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; color: var(--silver); font-size: .9rem; }
+    .contact-detail span:first-child { font-size: 1.2rem; }
+    .contact-form { display: flex; flex-direction: column; gap: 14px; }
+    .contact-form input, .contact-form textarea {
+      background: var(--surface); border: 1.5px solid var(--border); border-radius: 8px;
+      color: var(--white); padding: 13px 16px; font-size: .9rem; outline: none;
+      font-family: 'Inter', sans-serif; transition: border-color .2s;
+    }
+    .contact-form textarea { resize: vertical; min-height: 120px; }
+    .contact-form input:focus, .contact-form textarea:focus { border-color: var(--orange); }
+    .contact-form input::placeholder, .contact-form textarea::placeholder { color: var(--silver); }
+
+    /* FOOTER */
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 28px 5%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+    .footer-logo { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 700; }
+    .footer-logo span { color: var(--orange); }
+    footer p { color: var(--silver); font-size: .82rem; }
+
+    /* SCROLL TOP */
+    #scrollTop {
+      position: fixed; bottom: 30px; right: 30px; width: 44px; height: 44px; border-radius: 50%;
+      background: var(--orange); color: #fff; border: none; cursor: pointer; font-size: 1.1rem;
+      display: none; align-items: center; justify-content: center;
+      box-shadow: 0 6px 20px rgba(255,107,43,.4); transition: transform .2s; z-index: 800;
+    }
+    #scrollTop.show { display: flex; }
+    #scrollTop:hover { transform: scale(1.1); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .about-grid, .contact-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 24px; }
+      .modal-specs-grid { grid-template-columns: 1fr 1fr; }
+      .search-bar-wrap { flex-direction: column; }
+      .modal-bike-hero { height: 200px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Moto<span>Zone</span></div>
+  <ul class="nav-links">
+    <li><a href="#home" class="active" onclick="setActive(this)">🏠 Home</a></li>
+    <li><a href="#featured" onclick="setActive(this)">⭐ Featured</a></li>
+    <li><a href="#new-bikes" onclick="setActive(this)">🆕 New Bikes</a></li>
+    <li><a href="#old-bikes" onclick="setActive(this)">🔄 Old Bikes</a></li>
+    <li><a href="#about" onclick="setActive(this)">ℹ️ About</a></li>
+    <li><a href="#contact" onclick="setActive(this)" class="nav-cta">📞 Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-eye">India's #1 Bike Showroom</div>
+  <h1 class="hero-title">Ride Your<br/><em>Dream Bike</em></h1>
+  <p class="hero-sub">Premium bikes, unbeatable prices — new &amp; used. Find your perfect ride in seconds.</p>
+  <div class="hero-btns">
+    <a href="#featured" class="btn-primary">🏍️ Explore Bikes</a>
+    <a href="#contact" class="btn-ghost">📞 Book Test Ride</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item"><div class="stat-num">500+</div><div class="stat-lbl">Bikes Available</div></div>
+    <div class="stat-item"><div class="stat-num">12K+</div><div class="stat-lbl">Happy Customers</div></div>
+    <div class="stat-item"><div class="stat-num">15+</div><div class="stat-lbl">Brands</div></div>
+    <div class="stat-item"><div class="stat-num">5★</div><div class="stat-lbl">Rating</div></div>
+  </div>
+</section>
+
+<!-- FEATURED -->
+<section id="featured" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="section-eye">Top Picks</div>
+  <h2 class="section-title">🔥 Featured Bikes</h2>
+  <p class="section-sub">Hamare sabse popular aur bestselling bikes — ek nazar mein.</p>
+  <div class="bikes-grid" id="featuredGrid"></div>
+</section>
+
+<!-- NEW BIKES -->
+<section id="new-bikes">
+  <div class="section-eye">Brand New</div>
+  <h2 class="section-title">New Bikes</h2>
+  <p class="section-sub">Zero meter bikes with full manufacturer warranty. Latest models available.</p>
+  <div class="search-bar-wrap">
+    <input class="search-bar" id="newSearch" type="text" placeholder="Search by name, brand, engine…" oninput="renderBikes('new')"/>
+    <button class="search-btn" onclick="renderBikes('new')">🔍 Search</button>
+  </div>
+  <div class="filter-row" id="newFilters">
+    <button class="filter-chip active" onclick="setFilter('new','all',this)">All</button>
+    <button class="filter-chip" onclick="setFilter('new','sports',this)">Sports</button>
+    <button class="filter-chip" onclick="setFilter('new','cruiser',this)">Cruiser</button>
+    <button class="filter-chip" onclick="setFilter('new','commuter',this)">Commuter</button>
+    <button class="filter-chip" onclick="setFilter('new','adventure',this)">Adventure</button>
+  </div>
+  <div class="bikes-grid" id="newGrid"></div>
+  <div class="no-result" id="newNoResult">😔 Koi bike nahi mili. Dusra naam try karein.</div>
+</section>
+
+<!-- OLD BIKES -->
+<section id="old-bikes" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="section-eye">Pre-Owned</div>
+  <h2 class="section-title">Old / Used Bikes</h2>
+  <p class="section-sub">Verified second-hand bikes at best prices. RC transfer support included.</p>
+  <div class="search-bar-wrap">
+    <input class="search-bar" id="oldSearch" type="text" placeholder="Search used bikes…" oninput="renderBikes('old')"/>
+    <button class="search-btn" onclick="renderBikes('old')">🔍 Search</button>
+  </div>
+  <div class="filter-row" id="oldFilters">
+    <button class="filter-chip active" onclick="setFilter('old','all',this)">All</button>
+    <button class="filter-chip" onclick="setFilter('old','sports',this)">Sports</button>
+    <button class="filter-chip" onclick="setFilter('old','cruiser',this)">Cruiser</button>
+    <button class="filter-chip" onclick="setFilter('old','commuter',this)">Commuter</button>
+    <button class="filter-chip" onclick="setFilter('old','adventure',this)">Adventure</button>
+  </div>
+  <div class="bikes-grid" id="oldGrid"></div>
+  <div class="no-result" id="oldNoResult">😔 Koi bike nahi mili. Dusra naam try karein.</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-text">
+      <div class="section-eye">Hamare Baare Mein</div>
+      <h2>MotoZone kyun choose karein?</h2>
+      <p>2010 se hum India ke top bike dealers mein se ek hain. Humare paas 15+ brands ke 500+ models hain — new aur used dono.</p>
+      <p>Har bike thorough inspection se guzarti hai. Best price guarantee ke saath transparent dealing hamara vaada hai.</p>
+    </div>
+    <div class="about-feat">
+      <div class="feat-item"><div class="feat-icon">🛡️</div><div><div class="feat-title">Verified Quality</div><div class="feat-desc">Har bike 150-point inspection se certified. Koi hidden defect nahi.</div></div></div>
+      <div class="feat-item"><div class="feat-icon">💰</div><div><div class="feat-title">Best Price Guarantee</div><div class="feat-desc">Market se better deal milegi — warna hum match karenge.</div></div></div>
+      <div class="feat-item"><div class="feat-icon">📋</div><div><div class="feat-title">Easy Finance</div><div class="feat-desc">0% down payment options available. EMI plans starting ₹999/month.</div></div></div>
+      <div class="feat-item"><div class="feat-icon">🔧</div><div><div class="feat-title">Free Service (1 Year)</div><div class="feat-desc">New bikes pe 1 year free service + roadside assistance.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-eye">Sampark Karein</div>
+  <h2 class="section-title">Contact Us</h2>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <p>Test ride book karein, price quote lein, ya koi bhi sawaal poochein — hum 24/7 available hain.</p>
+      <div class="contact-detail"><span>📍</span><span>MotoZone Showroom, MG Road, Bangalore – 560001</span></div>
+      <div class="contact-detail"><span>📞</span><span>+91 98765 43210</span></div>
+      <div class="contact-detail"><span>✉️</span><span>info@motozone.in</span></div>
+      <div class="contact-detail"><span>🕐</span><span>Mon–Sat: 9AM–8PM | Sun: 10AM–6PM</span></div>
+    </div>
+    <div class="contact-form">
+      <input type="text" placeholder="Aapka Naam"/>
+      <input type="text" placeholder="Phone Number"/>
+      <input type="text" placeholder="Konsi Bike Mein Interest Hai?"/>
+      <textarea placeholder="Aapka Message…"></textarea>
+      <button class="btn-primary" onclick="alert('✅ Message bhej diya gaya! Hum jald sampark karenge.')">📨 Message Bhejein</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Moto<span>Zone</span></div>
+  <p>© 2026 MotoZone. Sabhi adhikar surakshit hain.</p>
+  <p>🏍️ India ka Bharosemand Bike Showroom</p>
+</footer>
+
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">▲</button>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <div>
+        <div style="font-size:.72rem;letter-spacing:2px;color:var(--orange);text-transform:uppercase;margin-bottom:4px;" id="mBrand"></div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:700;" id="mName"></div>
+      </div>
+      <button class="modal-close" id="modalCloseBtn">✕</button>
+    </div>
+    <div class="modal-body">ni
+      <!-- MODIFIED: Fixed id name here for image insertion -->
+      <div class="modal-bike-hero" id="mImageContainer"></div>
+      <div class="modal-specs-grid" id="mSpecs"></div>
+      <p class="modal-desc" id="mDesc"></p>
+      <div class="modal-price-row">
+        <div>
+          <div style="font-size:.75rem;color:var(--silver);margin-bottom:4px;">PRICE</div>
+          <div class="modal-price" id="mPrice"></div>
+        </div>
+        <button class="btn-primary" onclick="alert('Test Ride booked! Hum jald call karenge.')">🏍️ Test Ride Book Karein</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── DATA ─────────────────────────────────────── */
+/* MODIFIED: Added placeholder image URLs for all bikes. Replace 'https://picsum.photos/...' with actual bike image links. */
+const allBikes = [
+  /* NEW */
+  { id:1,  type:'new', brand:'Royal Enfield', name:'Hunter 350',      model:'2024 BS6',        image:'https://cdn.bikedekho.com/processedimages/royal-enfield/roadstar/source/roadstar68c28d299fba9.jpg', cat:'cruiser',   price:'₹1,49,900', engine:'349cc Single',         power:'20.2 BHP', torque:'27 Nm',   weight:'181 kg', mileage:'36 kmpl', color:'Dapper White',        badge:'hot', desc:'Hunter 350 ek stylish urban cruiser hai jo apni classic look aur smooth ride ke liye mashhoor hai. Daily commute aur weekend highways dono ke liye perfect.' },
+  { id:2,  type:'new', brand:'KTM',           name:'Duke 390',         model:'2024 Edition',    image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxs2exiobAdeJVPqSrFHpC1SLPOO-uW6XYQuncVULwmbiMBkoMl4qqhsA&s=10', cat:'sports',    price:'₹3,10,000', engine:'399cc Single',         power:'44 BHP',   torque:'37 Nm',   weight:'163 kg', mileage:'28 kmpl', color:'Black & Orange',      badge:'hot', desc:'KTM Duke 390 India ki sabse thrilling naked sports bike hai. Aggressive styling, powerful engine aur advanced electronics ke saath ye riders ka dream bike hai.' },
+  { id:3,  type:'new', brand:'Honda',         name:'CB Shine 125',     model:'2024 SP',         image:'https://imgd.aeplcdn.com/1280x720/n/cw/ec/45481/shine-right-side-view-13.jpeg?isig=0', cat:'commuter',  price:'₹79,500',   engine:'124cc Single',         power:'10.6 BHP', torque:'11 Nm',   weight:'112 kg', mileage:'60 kmpl', color:'Pearl Black',         badge:'new', desc:'Honda CB Shine India ki bestselling commuter bike hai. Fuel efficiency aur reliability ke saath ye family ka bharosemand saathi hai.' },
+  { id:4,  type:'new', brand:'Bajaj',         name:'Pulsar NS200',     model:'2024',            image:'https://imgd.aeplcdn.com/1280x720/n/cw/ec/144219/bajaj-pulsar-ns-right-side-view0.jpeg?isig=0', cat:'sports',    price:'₹1,54,400', engine:'199.5cc Triple Spark', power:'24.1 BHP', torque:'18.7 Nm', weight:'156 kg', mileage:'35 kmpl', color:'Burnt Red',           badge:'new', desc:'Bajaj Pulsar NS200 ek performance-oriented street fighter hai. Triple spark technology se better combustion milti hai aur riding experience thrilling hota hai.' },
+  { id:5,  type:'new', brand:'Yamaha',        name:'R15 V4',           model:'2024 MotoGP',     image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlYKMlDVPGawdI8YtKxFzwBa6t-KaoOPS8N10i_sRTPd05mFXiqJNNmZr5&s=10', cat:'sports',    price:'₹1,82,900', engine:'155cc VVA',            power:'18.4 BHP', torque:'14.2 Nm', weight:'142 kg', mileage:'40 kmpl', color:'Racing Blue',         badge:'hot', desc:'Yamaha R15 V4 ek full-faired supersport hai jo MotoGP technology se inspired hai. VVA, slipper clutch aur traction control ke saath track killer hai.' },
+  { id:6,  type:'new', brand:'Royal Enfield', name:'Himalayan 450',    model:'2024',            image:'https://krazyhorse.co.uk/cdn/shop/files/royal-enfield-himalayan-hanla-black-right-profile_2000x.jpg?v=1729682004', cat:'adventure', price:'₹2,85,000', engine:'452cc Sherpa',         power:'40 BHP',   torque:'40 Nm',   weight:'196 kg', mileage:'30 kmpl', color:'Slate Himalayan',     badge:'new', desc:'Himalayan 450 ek true adventure tourer hai. Naya Sherpa engine, modern electronics aur improved off-road capability ke saath ye Leh-Ladakh trips ka companion hai.' },
+  { id:7,  type:'new', brand:'Hero',          name:'Splendor Plus',    model:'2024 XTEC',       image:'https://mc.bajajfinserv.in/media/catalog/product/h/e/herosplendorplusxteccanvasblack_base_1.jpeg', cat:'commuter',  price:'₹76,800',   engine:'97.2cc Single',        power:'8.02 BHP', torque:'8.05 Nm', weight:'112 kg', mileage:'65 kmpl', color:'Candy Blazing Red',   badge:'new', desc:'Hero Splendor Plus India ki sab se zyada bikne wali bike hai. Reliability, fuel efficiency aur low maintenance cost isko working class ki pehli choice banati hai.' },
+  { id:8,  type:'new', brand:'Triumph',       name:'Speed 400',        model:'2024',            image:'https://imgd.aeplcdn.com/664x374/n/sf0hg8b_1924470.png?q=80', cat:'cruiser',   price:'₹2,39,000', engine:'398.15cc Single',      power:'39.5 BHP', torque:'37.5 Nm', weight:'170 kg', mileage:'28 kmpl', color:'Carnival Red',        badge:'hot', desc:'Triumph Speed 400 British heritage aur Indian value ka perfect combination hai. Bajaj ke saath partnership se bani ye bike premium feel deti hai budget price pe.' },
+  { id:9,  type:'new', brand:'Suzuki',        name:'Gixxer SF 250',    model:'2024',            image:'https://imgd.aeplcdn.com/664x374/n/cw/ec/1/versions/--standard1744983583068.jpg?q=80', cat:'sports',    price:'₹1,98,000', engine:'249cc Oil Cooled',     power:'26.5 BHP', torque:'22.6 Nm', weight:'161 kg', mileage:'38 kmpl', color:'Sparkle Black',       badge:'new', desc:'Suzuki Gixxer SF 250 ek full-fairing sports bike hai. Smooth engine aur sporty looks ke liye popular — daily use aur weekend rides dono ke liye perfect.' },
+  { id:10, type:'new', brand:'TVS',           name:'Apache RTR 310',   model:'2024 BS6',        image:'https://imgd.aeplcdn.com/664x374/n/cw/ec/1/versions/--base1753881001496.jpg?q=80', cat:'sports',    price:'₹2,73,000', engine:'312.2cc Single',       power:'34 BHP',   torque:'27.3 Nm', weight:'174 kg', mileage:'32 kmpl', color:'Titanium Grey',       badge:'hot', desc:'TVS Apache RTR 310 Indian engineering ka masterpiece hai. Race-derived tech, slipper clutch aur cornering ABS ke saath ye track aur road dono pe dominant hai.' },
+  { id:11, type:'new', brand:'Honda',         name:'CB300F',           model:'2024',            image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhty3-UZzh7DqfEmGgIhhMzUmfhvE5ZnnNsuDT8334ImUfWXOAYk-Yfdjz&s=10', cat:'sports',    price:'₹2,18,900', engine:'293cc Liquid Cooled',  power:'25 BHP',   torque:'25.9 Nm', weight:'147 kg', mileage:'33 kmpl', color:'Pearl Spartan Red',   badge:'new', desc:'Honda CB300F ek premium naked sports bike hai. Honda ki reliability ke saath powerful engine aur stylish design ka combo youngsters ki favorite hai.' },
+  { id:12, type:'new', brand:'Bajaj',         name:'Dominar 400',      model:'2024 TS',         image:'https://imgd.aeplcdn.com/476x268/bw/models/bajaj-dominar400.jpg?20190103151915', cat:'cruiser',   price:'₹2,26,373', engine:'373.3cc Single',       power:'40 BHP',   torque:'35 Nm',   weight:'187 kg', mileage:'26 kmpl', color:'Aurora Green',        badge:'new', desc:'Bajaj Dominar 400 ek powerful touring cruiser hai. Full-LED lighting, 43mm USD forks aur dual-channel ABS ke saath long distance touring ke liye ideal hai.' },
+  { id:13, type:'new', brand:'Kawasaki',      name:'Ninja 300',        model:'2023 Special',    image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI1Z9j8cMl0rldA1Zz0I6vb2IErnIoc5F5xUQgPnc6saMbcSFI4yZq1Hs&s=10', cat:'sports',    price:'₹3,55,000', engine:'296cc Parallel Twin',  power:'39 BHP',   torque:'27 Nm',   weight:'172 kg', mileage:'25 kmpl', color:'Lime Green',          badge:'hot', desc:'Kawasaki Ninja 300 ek legendary supersport bike hai. Parallel twin engine ki smooth power aur iconic green color isko sabka dream bike banata hai.' },
+  { id:14, type:'new', brand:'Hero',          name:'Xtreme 160R',      model:'2024 4V Stealth', image:'https://www.bikeleague.in/wp-content/uploads/2024/08/Untitled-2-2.png', cat:'sports',    price:'₹1,24,628', engine:'163cc 4-Valve',        power:'15.2 BHP', torque:'14 Nm',   weight:'147 kg', mileage:'45 kmpl', color:'Stealth Blue',        badge:'new', desc:'Hero Xtreme 160R 4V ek feature-packed sports commuter hai. 4-valve engine technology se better power milti hai aur price bhi budget-friendly hai.' },
+  /* OLD */
+  { id:21, type:'old', brand:'Royal Enfield', name:'Classic 350',      model:'2021 Signals',    image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQy6I3WiY98fDC19E1E-hGqHzp3sUH8q1YAczoILiejQslV58t16t7erFA&s=10', cat:'cruiser',   price:'₹1,25,000', engine:'346cc Single',         power:'19.1 BHP', torque:'28 Nm',   weight:'195 kg', mileage:'37 kmpl', color:'Airborne Blue',       badge:'old', km:'18,500 km', desc:'2021 model, single owner. Excellent condition. Full service history available. Minor scratches par engine ekdum perfect hai. All documents clear.' },
+  { id:22, type:'old', brand:'KTM',           name:'Duke 200',          model:'2022',            image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-cT6txviXknwJtQOYzBFhz_OZeFS2qqATfJDGDD4knLm49rsMGG75DqE&s=10', cat:'sports',    price:'₹1,45,000', engine:'199.5cc Single',       power:'25 BHP',   torque:'19.3 Nm', weight:'150 kg', mileage:'30 kmpl', color:'Orange',              badge:'old', km:'12,000 km', desc:'2022 model, first owner. All papers clear. Insurance valid. Bike bilkul original condition mein hai, koi accident history nahi. Very well maintained.' },
+  { id:23, type:'old', brand:'Yamaha',        name:'FZ-S V3',           model:'2020',            image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQV-dWhN9tq9_iiLF3GZOgGVXMsAydc_3KrIaDQOF09Ug&s=10', cat:'sports',    price:'₹85,000',   engine:'149cc Fuel Injected',  power:'13.2 BHP', torque:'12.8 Nm', weight:'136 kg', mileage:'45 kmpl', color:'Matte Black',         badge:'old', km:'28,000 km', desc:'2020 model, second owner. FI engine perfectly tuned. New tyres 3 mahine pehle lagaye. Negotiable price genuine buyers ke liye.' },
+  { id:24, type:'old', brand:'Honda',         name:'CB300R',            model:'2021',            image:'https://imgd.aeplcdn.com/370x208/n/cw/ec/200817/cb300r-right-side-view.jpeg?isig=0&q=80', cat:'sports',    price:'₹2,10,000', engine:'293cc Liquid Cooled',  power:'30.8 BHP', torque:'27.4 Nm', weight:'147 kg', mileage:'30 kmpl', color:'Red',                 badge:'old', km:'9,500 km',  desc:'Bilkul jaise new — 2021 CB300R sirf 9500km chali hai. First owner, company maintained. Full insurance. Ek bhi dent ya scratch nahi.' },
+  { id:25, type:'old', brand:'Bajaj',         name:'Avenger 220',       model:'2019 Cruise',     image:'https://m.media-amazon.com/images/I/51UAsPAhpFL._AC_UF1000,1000_QL80_.jpg', cat:'cruiser',   price:'₹72,000',   engine:'220cc DTS-i',          power:'19 BHP',   torque:'17.5 Nm', weight:'180 kg', mileage:'40 kmpl', color:'Ebony Black',         badge:'old', km:'35,000 km', desc:'2019 Avenger Cruise 220, single owner. Highway rides ke liye perfect posture. Engine aur gearbox smooth. Price thoda negotiable hai.' },
+  { id:26, type:'old', brand:'Hero',          name:'XPulse 200',        model:'2022 4V',         image:'https://imgd.aeplcdn.com/0x0/n/bw/models/colors/hero-select-model-sports-red-1707139187405.png?q=80', cat:'adventure', price:'₹1,10,000', engine:'199.6cc 4-Valve',      power:'18.9 BHP', torque:'17.3 Nm', weight:'157 kg', mileage:'38 kmpl', color:'Mars Red',            badge:'old', km:'15,200 km', desc:'2022 XPulse 200 4V, adventure touring ke liye perfect. USB charging, Bluetooth equipped. Only road use, all documents clear.' },
+  { id:27, type:'old', brand:'Suzuki',        name:'Gixxer 155',        model:'2020',            image:'https://5.imimg.com/data5/SELLER/Default/2024/8/445164938/EM/GH/ML/16402/suzuki-gixxer-sf-155-motorcycle-500x500.png', cat:'sports',    price:'₹90,000',   engine:'155cc Oil Cooled',     power:'14.8 BHP', torque:'14 Nm',   weight:'135 kg', mileage:'50 kmpl', color:'Triton Blue',         badge:'old', km:'22,000 km', desc:'2020 Gixxer 155 excellent condition. Regular service authorized center se. Minor scratches but mechanically perfect.' },
+  { id:28, type:'old', brand:'Yamaha',        name:'MT-15 V2',          model:'2021',            image:'https://imgd.aeplcdn.com/0x0/n/zu7rphb_1881675.jpg?q=80', cat:'sports',    price:'₹1,35,000', engine:'155cc VVA',            power:'18.4 BHP', torque:'14.1 Nm', weight:'138 kg', mileage:'42 kmpl', color:'Ice Fluo',            badge:'old', km:'17,800 km', desc:'Yamaha MT-15 V2 hyper naked design ke saath. VVA engine, USD forks equipped. Well maintained single owner. Test ride available.' },
+  { id:29, type:'old', brand:'Royal Enfield', name:'Meteor 350',        model:'2021 Fireball',   image:'https://imgd.aeplcdn.com/664x374/n/cw/ec/1/versions/royalenfield-meteor-350-fireball1757944044825.jpg?q=80', cat:'cruiser',   price:'₹1,42,000', engine:'349cc Single',         power:'20.2 BHP', torque:'27 Nm',   weight:'191 kg', mileage:'36 kmpl', color:'Fireball Red',        badge:'old', km:'21,000 km', desc:'RE Meteor 350 — comfort cruising ke liye best. Tripper nav pod installed, Bluetooth connectivity. Original paint, well maintained.' },
+  { id:30, type:'old', brand:'TVS',           name:'Apache RTR 200 4V', model:'2020 Race Ed.',   image:'https://imgd.aeplcdn.com/1280x720/n/cw/ec/204536/apache-200-right-front-three-quarter-3.jpeg?isig=0', cat:'sports',    price:'₹98,000',   engine:'197.75cc 4-Valve',     power:'20.5 BHP', torque:'18.1 Nm', weight:'148 kg', mileage:'40 kmpl', color:'Racing Red',          badge:'old', km:'31,000 km', desc:'TVS Apache RTR 200 Race Edition — ABS, race tuned engine. Slipper clutch ke saath smooth gear shifts. Insurance aur RC updated hai.' },
+];
+
+const newBikes = allBikes.filter(b => b.type === 'new');
+const oldBikes = allBikes.filter(b => b.type === 'old');
+
+/* ── STATE ─────────────────────────────────── */
+const state = { new: { filter:'all' }, old: { filter:'all' } };
+
+/* ── CARD HTML ─────────────────────────────── */
+/* MODIFIED: Replaced emoji with an <img> tag for real bike images */
+function cardHTML(b) {
+  const bLabel = b.badge === 'hot' ? '🔥 HOT' : b.badge === 'new' ? '✨ NEW' : '♻️ USED';
+  return `
+    <div class="bike-img-wrap">
+      <img src="${b.image}" alt="${b.name}" class="bike-img" />
+      <div class="badge badge-${b.badge}">${bLabel}</div>
+    </div>
+    <div class="bike-body">
+      <div class="bike-brand">${b.brand}</div>
+      <div class="bike-name">${b.name}</div>
+      <div class="bike-model">${b.model}${b.km ? ' · ' + b.km : ''}</div>
+      <div class="bike-specs">
+        <div class="spec"><div class="spec-lbl">ENGINE</div><div class="spec-val">${b.engine}</div></div>
+        <div class="spec"><div class="spec-lbl">POWER</div><div class="spec-val">${b.power}</div></div>
+        <div class="spec"><div class="spec-lbl">MILEAGE</div><div class="spec-val">${b.weight}</div></div>
+        <div class="spec"><div class="spec-lbl">WEIGHT</div><div class="spec-val">${b.weight}</div></div>
+      </div>
+      <div class="bike-footer">
+        <div class="bike-price">${b.price}<span>Ex-Showroom</span></div>
+        <button class="detail-btn" onclick="openModal(${b.id})">Details ›</button>
+      </div>
+    </div>`;
+}
+
+/* ── RENDER FEATURED ───────────────────────── */
+function renderFeatured() {
+  const picks = [
+    ...newBikes.filter(b => b.badge === 'hot').slice(0, 6),
+    ...oldBikes.slice(0, 4),
+  ];
+  const grid = document.getElementById('featuredGrid');
+  grid.innerHTML = '';
+  picks.forEach((b, i) => {
+    const card = document.createElement('div');
+    card.className = 'bike-card';
+    card.style.animationDelay = (i * 55) + 'ms';
+    card.innerHTML = cardHTML(b);
+    grid.appendChild(card);
+  });
+}
+
+/* ── RENDER BIKES ──────────────────────────── */
+function renderBikes(type) {
+  const src   = type === 'new' ? newBikes : oldBikes;
+  const q     = document.getElementById(type + 'Search').value.toLowerCase().trim();
+  const filt  = state[type].filter;
+  const grid  = document.getElementById(type + 'Grid');
+  const noRes = document.getElementById(type + 'NoResult');
+
+  const filtered = src.filter(b => {
+    const matchQ = !q ||
+      b.name.toLowerCase().includes(q) ||
+      b.brand.toLowerCase().includes(q) ||
+      b.model.toLowerCase().includes(q) ||
+      b.engine.toLowerCase().includes(q) ||
+      b.cat.toLowerCase().includes(q);
+    const matchF = filt === 'all' || b.cat === filt;
+    return matchQ && matchF;
+  });
+
+  grid.innerHTML = '';
+  if (filtered.length === 0) {
+    noRes.style.display = 'block';
+    return;
+  }
+  noRes.style.display = 'none';
+
+  filtered.forEach((b, i) => {
+    const card = document.createElement('div');
+    card.className = 'bike-card';
+    card.style.animationDelay = (i * 60) + 'ms';
+    card.innerHTML = cardHTML(b);
+    grid.appendChild(card);
+  });
+}
+
+/* ── FILTER ────────────────────────────────── */
+function setFilter(type, val, el) {
+  state[type].filter = val;
+  const row = document.getElementById(type + 'Filters');
+  row.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderBikes(type);
+}
+
+/* ── MODAL ─────────────────────────────────── */
+function openModal(id) {
+  const bike = allBikes.find(b => b.id === id);
+  if (!bike) return;
+
+  document.getElementById('mBrand').textContent = bike.brand;
+  document.getElementById('mName').textContent  = bike.name + ' ' + bike.model;
+  
+  /* MODIFIED: Replaced emoji injection with an actual image tag inside the modal */
+  document.getElementById('mImageContainer').innerHTML = `<img src="${bike.image}" alt="${bike.name}" />`;
+  
+  document.getElementById('mDesc').textContent  = bike.desc;
+  document.getElementById('mPrice').textContent = bike.price;
+
+  document.getElementById('mSpecs').innerHTML =
+    '<div class="modal-spec"><div class="modal-spec-lbl">ENGINE</div><div class="modal-spec-val">' + bike.engine + '</div></div>' +
+    '<div class="modal-spec"><div class="modal-spec-lbl">POWER</div><div class="modal-spec-val">' + bike.power + '</div></div>' +
+    '<div class="modal-spec"><div class="modal-spec-lbl">TORQUE</div><div class="modal-spec-val">' + bike.torque + '</div></div>' +
+    '<div class="modal-spec"><div class="modal-spec-lbl">MILEAGE</div><div class="modal-spec-val">' + bike.mileage + '</div></div>' +
+    '<div class="modal-spec"><div class="modal-spec-lbl">WEIGHT</div><div class="modal-spec-val">' + bike.weight + '</div></div>' +
+    '<div class="modal-spec"><div class="modal-spec-lbl">COLOR</div><div class="modal-spec-val">' + bike.color + '</div></div>' +
+    (bike.km ? '<div class="modal-spec"><div class="modal-spec-lbl">KM DRIVEN</div><div class="modal-spec-val">' + bike.km + '</div></div>' : '') +
+    '<div class="modal-spec"><div class="modal-spec-lbl">CATEGORY</div><div class="modal-spec-val">' + bike.cat.toUpperCase() + '</div></div>';
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+
+/* ── NAV ACTIVE ────────────────────────────── */
+function setActive(el) {
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ── SCROLL TOP ────────────────────────────── */
+window.addEventListener('scroll', () => {
+  document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 400);
+});
+
+/* ── INIT ──────────────────────────────────── */
+renderFeatured();
+renderBikes('new');
+renderBikes('old');
+</script>
+</body>
+</html>

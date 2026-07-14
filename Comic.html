@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MK Comic World</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --bg: #0d0d0d;
+      --bg2: #161616;
+      --bg3: #1e1e1e;
+      --card: #1a1a1a;
+      --border: #2e2e2e;
+      --text: #f0f0f0;
+      --text2: #aaa;
+      --accent: #e63946;
+      --accent2: #ffd700;
+      --nav-bg: rgba(13,13,13,0.92);
+      --shadow: 0 4px 24px rgba(0,0,0,0.5);
+      --transition: 0.3s ease;
+    }
+    [data-theme="light"] {
+      --bg: #f4f4f4;
+      --bg2: #ececec;
+      --bg3: #e0e0e0;
+      --card: #ffffff;
+      --border: #d0d0d0;
+      --text: #111;
+      --text2: #555;
+      --accent: #e63946;
+      --accent2: #e5a000;
+      --nav-bg: rgba(244,244,244,0.95);
+      --shadow: 0 4px 24px rgba(0,0,0,0.15);
+    }
+
+    /* ===== RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background var(--transition), color var(--transition);
+      min-height: 100vh;
+    }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--nav-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1.5px solid var(--border);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      transition: background var(--transition);
+    }
+
+    /* Logo */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      animation: spin-slow 8s linear infinite;
+    }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .logo-text {
+      font-family: 'Bangers', cursive;
+      font-size: 1.7rem;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+
+    /* Nav links */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      list-style: none;
+      flex-shrink: 0;
+    }
+    .nav-links a {
+      color: var(--text2);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: all var(--transition);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--accent);
+      background: rgba(230,57,70,0.1);
+    }
+
+    /* Search + Filter */
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex: 1;
+      justify-content: flex-end;
+      max-width: 480px;
+    }
+    .search-wrap {
+      position: relative;
+      flex: 1;
+    }
+    .search-wrap input {
+      width: 100%;
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      padding: 8px 14px 8px 38px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 600;
+      transition: all var(--transition);
+      outline: none;
+    }
+    .search-wrap input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(230,57,70,0.15);
+    }
+    .search-wrap input::placeholder { color: var(--text2); }
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text2);
+      font-size: 1rem;
+    }
+
+    /* Filter dropdown */
+    .filter-wrap { position: relative; }
+    .filter-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    .filter-btn:hover { background: #c1121f; transform: translateY(-1px); }
+    .filter-dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: calc(100% + 8px);
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      min-width: 160px;
+      z-index: 200;
+    }
+    .filter-dropdown.open { display: block; animation: fadeDown 0.2s ease; }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .filter-dropdown button {
+      display: block;
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 11px 18px;
+      text-align: left;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+    .filter-dropdown button:hover, .filter-dropdown button.active-filter {
+      background: rgba(230,57,70,0.1);
+      color: var(--accent);
+    }
+
+    /* Theme toggle */
+    .theme-btn {
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--transition);
+      flex-shrink: 0;
+    }
+    .theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ===== HERO ===== */
+    #home {
+      padding: 5rem 2rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    #home::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(230,57,70,0.12), transparent 70%);
+      pointer-events: none;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: rgba(230,57,70,0.15);
+      color: var(--accent);
+      border: 1px solid rgba(230,57,70,0.3);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .hero-title {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(3rem, 8vw, 6rem);
+      letter-spacing: 4px;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--text) 30%, var(--accent) 70%, var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+    }
+    .hero-sub {
+      color: var(--text2);
+      font-size: 1.05rem;
+      font-weight: 600;
+      max-width: 520px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Bangers', cursive;
+      font-size: 2rem;
+      color: var(--accent);
+      letter-spacing: 1px;
+    }
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--text2);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ===== FILTER PILLS (below hero) ===== */
+    .filter-pills {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      padding: 0 2rem 2.5rem;
+    }
+    .pill {
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      color: var(--text2);
+      padding: 7px 20px;
+      border-radius: 30px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-family: 'Nunito', sans-serif;
+    }
+    .pill:hover, .pill.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(230,57,70,0.3);
+    }
+
+    /* ===== SECTION HEADING ===== */
+    .section-head {
+      padding: 0 2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .section-head h2 {
+      font-family: 'Bangers', cursive;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      color: var(--text);
+    }
+    .section-head h2 span { color: var(--accent); }
+    .result-count {
+      font-size: 0.85rem;
+      color: var(--text2);
+      font-weight: 700;
+    }
+
+    /* ===== GRID ===== */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.4rem;
+      padding: 0 2rem 4rem;
+    }
+
+    /* ===== CARD ===== */
+    .card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all var(--transition);
+      animation: cardIn 0.4s ease both;
+      position: relative;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 32px rgba(230,57,70,0.2);
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .card-thumb {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+    .card:hover .card-thumb { transform: scale(1.05); }
+    .card-thumb-placeholder {
+      width: 100%;
+      aspect-ratio: 3/4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      transition: transform 0.4s ease;
+    }
+    .card:hover .card-thumb-placeholder { transform: scale(1.05); }
+    .card-body { padding: 12px 14px 14px; }
+    .card-badges {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 7px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-type { background: rgba(230,57,70,0.15); color: var(--accent); }
+    .badge-status { background: rgba(255,215,0,0.12); color: var(--accent2); }
+    .badge-ep { background: rgba(255,255,255,0.08); color: var(--text2); }
+    .card-title {
+      font-weight: 800;
+      font-size: 0.97rem;
+      color: var(--text);
+      margin-bottom: 5px;
+      line-height: 1.3;
+    }
+    .card-genre {
+      font-size: 0.78rem;
+      color: var(--text2);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--accent2);
+    }
+    .card-rank {
+      font-size: 0.75rem;
+      color: var(--text2);
+      font-weight: 700;
+    }
+    .fav-btn {
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      padding: 2px 4px;
+      border-radius: 6px;
+      transition: transform 0.2s;
+    }
+    .fav-btn:active { transform: scale(1.3); }
+
+    /* Ribbon */
+    .ribbon {
+      position: absolute;
+      top: 12px;
+      left: -1px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 900;
+      padding: 3px 10px 3px 8px;
+      border-radius: 0 6px 6px 0;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* No results */
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--text2);
+    }
+    .no-results .nr-icon { font-size: 4rem; margin-bottom: 1rem; }
+    .no-results h3 { font-family: 'Bangers', cursive; font-size: 1.8rem; color: var(--text); margin-bottom: 0.4rem; letter-spacing: 2px; }
+
+    /* ===== ABOUT ===== */
+    #about {
+      padding: 4rem 2rem;
+      background: var(--bg2);
+      border-top: 1.5px solid var(--border);
+      border-bottom: 1.5px solid var(--border);
+    }
+    .about-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    @media (max-width: 650px) { .about-inner { grid-template-columns: 1fr; } }
+    .about-text h2 {
+      font-family: 'Bangers', cursive;
+      font-size: 2.2rem;
+      letter-spacing: 3px;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+    .about-text h2 span { color: var(--accent); }
+    .about-text p {
+      color: var(--text2);
+      font-size: 0.97rem;
+      line-height: 1.7;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+    }
+    .about-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .feat {
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .feat-icon { font-size: 1.8rem; margin-bottom: 6px; }
+    .feat-label { font-size: 0.82rem; font-weight: 800; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* ===== CONTACT ===== */
+    #contact {
+      padding: 4rem 2rem;
+    }
+    .contact-inner {
+      max-width: 560px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .contact-inner h2 {
+      font-family: 'Bangers', cursive;
+      font-size: 2.2rem;
+      letter-spacing: 3px;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    .contact-inner h2 span { color: var(--accent); }
+    .contact-inner p { color: var(--text2); font-size: 0.95rem; font-weight: 600; margin-bottom: 2rem; line-height: 1.6; }
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .contact-form input,
+    .contact-form textarea {
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      outline: none;
+      transition: all var(--transition);
+      resize: none;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(230,57,70,0.12);
+    }
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder { color: var(--text2); }
+    .submit-btn {
+      background: linear-gradient(135deg, var(--accent), #c1121f);
+      color: #fff;
+      border: none;
+      padding: 13px 30px;
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all var(--transition);
+      letter-spacing: 0.5px;
+    }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(230,57,70,0.3); }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--bg2);
+      border-top: 1.5px solid var(--border);
+      padding: 3rem 2rem 1.5rem;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 768px) { .footer-inner { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .footer-inner { grid-template-columns: 1fr; } }
+    .footer-brand .logo-text { font-size: 1.5rem; }
+    .footer-brand p { color: var(--text2); font-size: 0.88rem; font-weight: 600; margin-top: 0.8rem; line-height: 1.6; }
+    .footer-col h4 {
+      font-family: 'Bangers', cursive;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      color: var(--text);
+      margin-bottom: 0.9rem;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 0.55rem; }
+    .footer-col ul li a {
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: color var(--transition);
+    }
+    .footer-col ul li a:hover { color: var(--accent); }
+    .social-links { display: flex; gap: 0.6rem; margin-top: 0.5rem; flex-wrap: wrap; }
+    .social-btn {
+      background: var(--bg3);
+      border: 1.5px solid var(--border);
+      color: var(--text2);
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all var(--transition);
+    }
+    .social-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+    .footer-bottom {
+      border-top: 1.5px solid var(--border);
+      padding-top: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .footer-bottom p { color: var(--text2); font-size: 0.82rem; font-weight: 600; }
+    .footer-bottom span { color: var(--accent); }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+    /* ===== RESPONSIVE NAV ===== */
+    @media (max-width: 900px) {
+      nav { padding: 0 1rem; gap: 0.5rem; }
+      .nav-links { display: none; }
+      .nav-right { max-width: 100%; }
+    }
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; }
+    }
+    .card-thumb{
+  width: 100%;
+  height:250px;
+  aspect-ratio: 16:9;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav>
+  <!-- Logo -->
+  <a class="logo" href="#home">
+    <!-- Luffy Gear 5 SVG Logo -->
+    <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="44" fill="none" stroke="#e63946" stroke-width="4"/>
+      <!-- Sun rays (Gear 5 / Nika / Sun God vibes) -->
+      <g transform="translate(50,50)" fill="#ffd700">
+        <rect x="-3" y="-46" width="6" height="14" rx="3"/>
+        <rect x="-3" y="32"  width="6" height="14" rx="3"/>
+        <rect x="32"  y="-3" width="14" height="6" rx="3"/>
+        <rect x="-46" y="-3" width="14" height="6" rx="3"/>
+        <rect x="22"  y="-35" width="6" height="14" rx="3" transform="rotate(45)"/>
+        <rect x="22"  y="21"  width="6" height="14" rx="3" transform="rotate(-45)"/>
+        <rect x="-28" y="-35" width="6" height="14" rx="3" transform="rotate(-45)"/>
+        <rect x="-28" y="21"  width="6" height="14" rx="3" transform="rotate(45)"/>
+      </g>
+      <!-- Inner circle (white) -->
+      <circle cx="50" cy="50" r="22" fill="white"/>
+      <!-- Straw hat silhouette inside -->
+      <ellipse cx="50" cy="50" rx="14" ry="5" fill="#e63946"/>
+      <ellipse cx="50" cy="47" rx="9" ry="8" fill="none" stroke="#e63946" stroke-width="3"/>
+      <!-- Smiley (Luffy smile) -->
+      <path d="M44 52 Q50 57 56 52" stroke="#e63946" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    </svg>
+    <span class="logo-text">MK Comic World</span>
+  </a>
+
+  <!-- Nav Links -->
+  <ul class="nav-links">
+    <li><a href="#home" class="active">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+
+  <!-- Search + Filter + Theme -->
+  <div class="nav-right">
+    <div class="filter-wrap">
+      <button class="filter-btn" id="filterToggle">
+        ☰ Filter
+      </button>
+      <div class="filter-dropdown" id="filterDropdown">
+        <button data-filter="all" class="active-filter">🌐 All</button>
+        <button data-filter="popular">🔥 Popular</button>
+        <button data-filter="best">⭐ Best Rated</button>
+        <button data-filter="long">📚 Long Series</button>
+        <button data-filter="short">⚡ Short Series</button>
+        <button data-filter="anime">🎌 Anime Only</button>
+        <button data-filter="manga">📖 Manga Only</button>
+      </div>
+    </div>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme">🌙</button>
+  </div>
+</nav>
+ <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search anime / comics..."/>
+    </div>
+<!-- ===== HERO ===== -->
+<section id="home">
+  <div class="hero-tag">🌟 Your Ultimate Anime & Comic Hub</div>
+  <h1 class="hero-title">COMIC WORLD</h1>
+  <p class="hero-sub">Discover epic manga, anime, and comics from across the universe. Rate, explore, and dive into infinite stories.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Titles</div></div>
+    <div class="stat"><div class="stat-num">1M+</div><div class="stat-label">Readers</div></div>
+    <div class="stat"><div class="stat-num">50+</div><div class="stat-label">Genres</div></div>
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Adventures</div></div>
+  </div>
+</section>
+
+<!-- ===== CARDS GRID ===== -->
+<div class="section-head">
+  <h2>Explore <span>Titles</span></h2>
+  <span class="result-count" id="resultCount">Showing all</span>
+</div>
+<div class="grid" id="cardGrid">
+  <!-- JS will render cards here -->
+</div>
+
+<!-- ===== ABOUT ===== -->
+<section id="about">
+  <div class="about-inner">
+    <div class="about-text">
+      <h2>About <span>Comic World</span></h2>
+      <p>Comic World is your go-to destination for all things anime and manga. From classic shonen legends to hidden gem manhwa — we've got it all.</p>
+      <p>Built by fans, for fans. Explore thousands of titles, track your favorites, and join a community that bleeds ink and animation.</p>
+      <p>Whether you're a casual viewer or a die-hard otaku — welcome home. 🏠</p>
+    </div>
+    <div class="about-features">
+      <div class="feat"><div class="feat-icon">🎌</div><div class="feat-label">Anime</div></div>
+      <div class="feat"><div class="feat-icon">📖</div><div class="feat-label">Manga</div></div>
+      <div class="feat"><div class="feat-icon">⭐</div><div class="feat-label">Ratings</div></div>
+      <div class="feat"><div class="feat-icon">🔥</div><div class="feat-label">Trending</div></div>
+      <div class="feat"><div class="feat-icon">💾</div><div class="feat-label">Watchlist</div></div>
+      <div class="feat"><div class="feat-icon">🌐</div><div class="feat-label">Community</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact">
+  <div class="contact-inner">
+    <h2>Contact <span>Us</span></h2>
+    <p>Got suggestions, bug reports, or just want to say Nani?! Drop us a message below.</p>
+    <div class="contact-form">
+      <input type="text" placeholder="Your Name 👤" />
+      <input type="email" placeholder="Your Email 📧" />
+      <textarea rows="5" placeholder="Your Message... 📝"></textarea>
+      <button class="submit-btn" onclick="handleSubmit()">Send Message 🚀</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a class="logo" href="#home" style="text-decoration:none;">
+        <span class="logo-text">Comic World</span>
+      </a>
+      <p>The universe's largest anime & manga discovery platform. Built by fans, for fans. Go Beyond. Plus Ultra!</p>
+      <div class="social-links">
+        <a class="social-btn" href="#" title="Twitter">𝕏</a>
+        <a class="social-btn" href="#" title="Discord">💬</a>
+        <a class="social-btn" href="#" title="Instagram">📸</a>
+        <a class="social-btn" href="#" title="YouTube">▶</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#">Trending</a></li>
+        <li><a href="#">New Releases</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Categories</h4>
+      <ul>
+        <li><a href="#">Shonen</a></li>
+        <li><a href="#">Shojo</a></li>
+        <li><a href="#">Isekai</a></li>
+        <li><a href="#">Action</a></li>
+        <li><a href="#">Slice of Life</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Use</a></li>
+        <li><a href="#">DMCA</a></li>
+        <li><a href="#">Cookies</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 <span>MK Comic World</span>. All rights reserved. Made with ❤️ for anime fans.</p>
+    <p>Inspired by the <span>Will of D.</span> 🏴‍☠️</p>
+  </div>
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+  // ===== DATA =====
+  const comics = [
+    { id:1,  title:"One Piece",          genre:"Adventure, Action",   type:"anime", episodes:1100, rating:9.8, status:"ongoing",  tag:"popular", image:"https://cdn.myanimelist.net/images/anime/6/73245.jpg", bg:"#1a0a00", ribbon:"#1" },
+    { id:2,  title:"Naruto",             genre:"Action, Ninja",        type:"anime", episodes:720,  rating:9.2, status:"completed",tag:"best",    image:"https://cdn.myanimelist.net/images/anime/13/17405.jpg", bg:"#1a1200", ribbon:null },
+    { id:3,  title:"Attack on Titan",    genre:"Dark Fantasy, Action", type:"anime", episodes:87,   rating:9.7, status:"completed",tag:"best",    image:"https://cdn.myanimelist.net/images/anime/10/47347.jpg", bg:"#0a0a1a", ribbon:"Top Rated" },
+    { id:4,  title:"Demon Slayer",       genre:"Action, Supernatural", type:"anime", episodes:44,   rating:9.0, status:"ongoing",  tag:"popular", image:"https://cdn.myanimelist.net/images/anime/1286/99889.jpg", bg:"#1a0010" },
+    { id:5,  title:"Dragon Ball Z",      genre:"Action, Martial Arts", type:"anime", episodes:291,  rating:9.1, status:"completed",tag:"best",   image: "https://cdn.myanimelist.net/images/anime/1277/142022.jpg", bg:"#1a0f00" },
+    { id:6,  title:"Bleach",             genre:"Action, Supernatural", type:"anime", episodes:366,  rating:8.8, status:"completed",tag:"popular", image:"https://cdn.myanimelist.net/images/anime/3/40451.jpg", bg:"#001a1a" },
+    { id:7,  title:"Fullmetal Alchemist",genre:"Fantasy, Adventure",   type:"anime", episodes:64,   rating:9.5, status:"completed",tag:"best",    image:"https://cdn.myanimelist.net/images/anime/1223/96541.jpg", bg:"#1a0f00" },
+    { id:8,  title:"Death Note",         genre:"Psychological Thriller",type:"anime",episodes:37,   rating:9.3, status:"completed",tag:"short",   image:"https://cdn.myanimelist.net/images/anime/9/9453.jpg", bg:"#0a0a0a" },
+    { id:9,  title:"My Hero Academia",   genre:"Superhero, Action",    type:"anime", episodes:138,  rating:8.7, status:"ongoing",  tag:"popular", image:"https://cdn.myanimelist.net/images/anime/10/78745.jpg", bg:"#001020" },
+    { id:10, title:"Jujutsu Kaisen",     genre:"Dark Fantasy, Action", type:"anime", episodes:47,   rating:9.0, status:"ongoing",  tag:"popular", image:"https://cdn.myanimelist.net/images/anime/1171/109222.jpg", bg:"#0a001a" },
+    { id:11, title:"Berserk",            genre:"Dark Fantasy",         type:"manga", episodes:363,  rating:9.7, status:"ongoing",  tag:"best",    image:"https://cdn.myanimelist.net/images/manga/1/157897.jpg", bg:"#0a0a00" },
+    { id:12, title:"One Punch Man",      genre:"Comedy, Action",       type:"anime", episodes:24,   rating:8.8, status:"ongoing",  tag:"short",   image:"https://cdn.myanimelist.net/images/anime/12/76049.jpg", bg:"#1a1500" },
+    { id:13, title:"Vinland Saga",       genre:"Historical, Action",   type:"anime", episodes:48,   rating:9.1, status:"completed",tag:"best",    image:"https://cdn.myanimelist.net/images/anime/1500/103005.jpg", bg:"#001a0a" },
+    { id:14, title:"Hunter x Hunter",   genre:"Adventure, Action",    type:"anime", episodes:148,  rating:9.4, status:"completed",tag:"best",    image:"https://cdn.myanimelist.net/images/anime/1337/99013.jpg", bg:"#001a00" },
+    { id:15, title:"Vagabond",           genre:"Historical, Drama",    type:"manga", episodes:327,  rating:9.6, status:"ongoing",  tag:"long",    image:"https://cdn.myanimelist.net/images/manga/1/259070.jpg", bg:"#0a1a00" },
+    { id:16, title:"Cowboy Bebop",       genre:"Sci-Fi, Jazz",         type:"anime", episodes:26,   rating:9.2, status:"completed",tag:"short",   image:"https://cdn.myanimelist.net/images/anime/4/19644.jpg", bg:"#000a1a" },
+    { id:17, title:"Chainsaw Man",       genre:"Dark Action",          type:"anime", episodes:12,   rating:8.7, status:"ongoing",  tag:"popular", image:"https://cdn.myanimelist.net/images/anime/1806/126216.jpg", bg:"#1a0000" },
+    { id:18, title:"Spy x Family",       genre:"Comedy, Family",       type:"anime", episodes:37,   rating:8.9, status:"ongoing",  tag:"popular", image:"https://cdn.myanimelist.net/images/anime/1441/122795.jpg", bg:"#001a10" },
+  ];
+
+  let activeFilter = "all";
+  let searchQuery = "";
+
+  // ===== RENDER CARDS =====
+  function renderCards() {
+    const grid = document.getElementById("cardGrid");
+    const countEl = document.getElementById("resultCount");
+
+    let filtered = comics.filter(c => {
+      const matchSearch = c.title.toLowerCase().includes(searchQuery) || c.genre.toLowerCase().includes(searchQuery);
+      let matchFilter = true;
+      if (activeFilter === "popular") matchFilter = c.tag === "popular";
+      else if (activeFilter === "best") matchFilter = c.rating >= 9.2;
+      else if (activeFilter === "long") matchFilter = c.episodes >= 200;
+      else if (activeFilter === "short") matchFilter = c.episodes <= 50;
+      else if (activeFilter === "anime") matchFilter = c.type === "anime";
+      else if (activeFilter === "manga") matchFilter = c.type === "manga";
+      return matchSearch && matchFilter;
+    });
+
+    countEl.textContent = `Showing ${filtered.length} title${filtered.length !== 1 ? "s" : ""}`;
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `<div class="no-results"><div class="nr-icon">😶</div><h3>No Results Found</h3><p>Try a different search or filter, king!</p></div>`;
+      return;
+    }
+
+    grid.innerHTML = filtered.map((c, i) => `
+      <div class="card" style="animation-delay:${i * 0.05}s">
+        ${c.ribbon ? `<div class="ribbon">${c.ribbon}</div>` : ""}
+        <img src="${c.image}" alt="${c.title}" class="card-thumb">
+        <div class="card-body">
+          <div class="card-badges">
+            <span class="badge badge-type">${c.type}</span>
+            <span class="badge badge-status">${c.status}</span>
+            <span class="badge badge-ep">${c.episodes} eps</span>
+          </div>
+          <div class="card-title">${c.title}</div>
+          <div class="card-genre">${c.genre}</div>
+          <div class="card-footer">
+            <div class="rating">⭐ ${c.rating}</div>
+            <button class="fav-btn" onclick="toggleFav(this)" title="Favourite">🤍</button>
+          </div>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  // ===== FILTER LOGIC =====
+  function setFilter(val) {
+    activeFilter = val;
+    // Update pills
+    document.querySelectorAll(".pill").forEach(p => p.classList.toggle("active", p.dataset.pill === val));
+    // Update dropdown
+    document.querySelectorAll(".filter-dropdown button").forEach(b => b.classList.toggle("active-filter", b.dataset.filter === val));
+    renderCards();
+  }
+
+  // Pills
+  document.querySelectorAll(".pill").forEach(p => {
+    p.addEventListener("click", () => setFilter(p.dataset.pill));
+  });
+
+  // Dropdown filter
+  document.querySelectorAll(".filter-dropdown button").forEach(b => {
+    b.addEventListener("click", () => {
+      setFilter(b.dataset.filter);
+      document.getElementById("filterDropdown").classList.remove("open");
+    });
+  });
+
+  // Filter dropdown toggle
+  document.getElementById("filterToggle").addEventListener("click", (e) => {
+    e.stopPropagation();
+    document.getElementById("filterDropdown").classList.toggle("open");
+  });
+  document.addEventListener("click", () => {
+    document.getElementById("filterDropdown").classList.remove("open");
+  });
+
+  // Search
+  document.getElementById("searchInput").addEventListener("input", (e) => {
+    searchQuery = e.target.value.toLowerCase().trim();
+    renderCards();
+  });
+
+  // ===== THEME TOGGLE =====
+  const themeBtn = document.getElementById("themeBtn");
+  themeBtn.addEventListener("click", () => {
+    const html = document.documentElement;
+    const isDark = html.getAttribute("data-theme") === "dark";
+    html.setAttribute("data-theme", isDark ? "light" : "dark");
+    themeBtn.textContent = isDark ? "☀️" : "🌙";
+  });
+
+  // ===== FAV TOGGLE =====
+  function toggleFav(btn) {
+    const isFav = btn.textContent === "❤️";
+    btn.textContent = isFav ? "🤍" : "❤️";
+    btn.style.transform = "scale(1.4)";
+    setTimeout(() => btn.style.transform = "", 300);
+  }
+
+  // ===== CONTACT SUBMIT =====
+  function handleSubmit() {
+    alert("Message sent! Arigatou gozaimasu! 🙏🎌");
+  }
+
+  // ===== NAV ACTIVE ON SCROLL =====
+  const sections = document.querySelectorAll("section[id], #home");
+  const navLinks = document.querySelectorAll(".nav-links a");
+  window.addEventListener("scroll", () => {
+    let current = "";
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    navLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + current));
+  });
+
+  // ===== INIT =====
+  renderCards();
+</script>
+</body>
+</html>
